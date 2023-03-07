@@ -1,76 +1,187 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
+import NavBar from "../components/navbar/index.astro";
 import httpRequest from "../helpers/http";
-
-const posts = await httpRequest<{ title: string; body: string; id: number }[]>({
-	url: "https://jsonplaceholder.typicode.com/posts",
-});
+// images
+import HeroImage from "../assets/images/home-carousel.png";
 ---
 
 <Layout title="Welcome to Astro.">
-	<main>
-		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
-		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br
-			/>
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<ul role="list" class="link-card-grid">
-			{
-				posts.map(({ id, title, body}) => (
-					<Card
-						href={`/post/${id}`}
-						title={title}
-						body={body}
-					/>
-				))
-			}
-		</ul>
+	<NavBar />
+	<main class="main-container js-main__container">
+		<!-- carousel section -->
+		<div
+			class="jumbotron jumbotron-fluid p-0 m-0 carousel-image bg-skyblue p-20px"
+		>
+			<div class="container">
+				<div
+					class="owl-carousel owl-theme owl-loaded overflow-hidden height-400px p-20px"
+				>
+					<div class="owl-stage-outer height-100 pr-0 pr-md-3 pl-0 pl-md-3">
+						<div class="owl-stage height-100">
+							<!-- carousel item -->
+							<div class="owl-item height-100">
+								<div
+									class="carousel-item height-100 d-flex flex-column flex-sm-row align-items-center align-itemsl-xl-start"
+								>
+									<div class="image__block flex-1">
+										<img
+											src={HeroImage}
+											class="img-fluid"
+											alt="product title"
+										/>
+									</div>
+									<div class="flex-1 row">
+										<div class="col-sm-12 col-xl-6 offset-xl-1 pt-2">
+											<div class="pl-2">
+												<h3
+													class="carousel__subtitle mb-0 mb-md-2 color-black-2 fs-24"
+												>
+													Display place holder
+												</h3>
+												<h1
+													class="carousel__title mb-0 mb-md-2 mb-lg-4 color-black-2"
+												>
+													Apple Ipad pro
+												</h1>
+												<div
+													class="mb-2 mb-md-4 pricing-container d-flex flex-column mb-3"
+												>
+													<span class="color-black-2">
+														<sup>DA</sup>150 000, 00
+													</span>
+													<span class="color-darkgrey fs-12">
+														<del><sup>DA</sup>150 000, 00</del>
+													</span>
+												</div>
+												<a
+													href="/"
+													class="carousel__link text-center d-inline-block btn-link height-48px border-green radius-2 p-1 pl-5 pr-5 color-white bg-green no-underline custom-btn"
+													>Button</a
+												>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- end of carousel item -->
+
+							<div class="owl-item height-100">
+								<div
+									class="carousel-item height-100 d-flex flex-column flex-sm-row align-items-center align-itemsl-xl-start"
+								>
+									<div class="image__block flex-1">
+										<img
+											src={HeroImage}
+											class="img-fluid"
+											alt="product title"
+										/>
+									</div>
+									<div class="flex-1 row">
+										<div class="col-sm-12 col-xl-6 offset-xl-1 pt-2">
+											<div class="pl-2">
+												<h3
+													class="carousel__subtitle mb-0 mb-md-2 color-black-2 fs-24"
+												>
+													Display place holder
+												</h3>
+												<h1
+													class="carousel__title mb-0 mb-md-2 mb-lg-4 color-black-2"
+												>
+													Apple Ipad pro
+												</h1>
+												<div
+													class="mb-2 mb-md-4 pricing-container d-flex flex-column mb-3"
+												>
+													<span class="color-black-2">
+														<sup>DA</sup>150 000, 00
+													</span>
+													<span class="color-darkgrey fs-12">
+														<del><sup>DA</sup>150 000, 00</del>
+													</span>
+												</div>
+												<a
+													href="/"
+													class="carousel__link text-center d-inline-block btn-link height-48px border-green radius-2 p-1 pl-5 pr-5 color-white bg-green no-underline custom-btn"
+													>Button</a
+												>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="owl-item height-100">
+								<div
+									class="carousel-item height-100 d-flex flex-column flex-sm-row align-items-center align-itemsl-xl-start"
+								>
+									<div class="image__block flex-1">
+										<img
+											src={HeroImage}
+											class="img-fluid"
+											alt="product title"
+										/>
+									</div>
+									<div class="flex-1 row">
+										<div class="col-sm-12 col-xl-6 offset-xl-1 pt-2">
+											<div class="pl-2">
+												<h3
+													class="carousel__subtitle mb-0 mb-md-2 color-black-2 fs-24"
+												>
+													Display place holder
+												</h3>
+												<h1
+													class="carousel__title mb-0 mb-md-2 mb-lg-4 color-black-2"
+												>
+													Apple Ipad pro
+												</h1>
+												<div
+													class="mb-2 mb-md-4 pricing-container d-flex flex-column mb-3"
+												>
+													<span class="color-black-2">
+														<sup>DA</sup>150 000, 00
+													</span>
+													<span class="color-darkgrey fs-12">
+														<del><sup>DA</sup>150 000, 00</del>
+													</span>
+												</div>
+												<a
+													href="/"
+													class="carousel__link text-center d-inline-block btn-link height-48px border-green radius-2 p-1 pl-5 pr-5 color-white bg-green no-underline custom-btn"
+													>Button</a
+												>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end of carousel section -->
 	</main>
 </Layout>
-
-<style>
-	main {
-		margin: auto;
-		padding: 1.5rem;
-		max-width: 60ch;
-	}
-	h1 {
-		font-size: 3rem;
-		font-weight: 800;
-		margin: 0;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-	.instructions {
-		line-height: 1.6;
-		margin: 1rem 0;
-		border: 1px solid rgba(var(--accent), 25%);
-		background-color: white;
-		padding: 1rem;
-		border-radius: 0.4rem;
-	}
-	.instructions code {
-		font-size: 0.875em;
-		font-weight: bold;
-		background: rgba(var(--accent), 12%);
-		color: rgb(var(--accent));
-		border-radius: 4px;
-		padding: 0.3em 0.45em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 1rem;
-		padding: 0;
-	}
-</style>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+	integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+	crossorigin="anonymous"
+	referrerpolicy="no-referrer"
+></script>
+<script>
+	// initialize owl carousel
+	var $owl = $(".owl-carousel");
+	$owl.owlCarousel({
+		loop: false,
+		margin: 20,
+		responsiveClass: true,
+		dots: true,
+		dotsClass: "carousel__dots-block",
+		dotClass: "carousel__dot radius-2",
+		nav: false,
+		autoplay: false,
+		autoplayHoverPause: true,
+		items: 1,
+	});
+</script>
