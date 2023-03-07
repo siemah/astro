@@ -1,0 +1,161 @@
+/******************************************
+          MEDIA QUERY FOR All THEMES
+******************************************/
+/* responsive product card on home ui*/
+@media only screen and (max-width: 1192px) {
+  .fs-lg-14 {
+    font-size: 14px;
+  }
+}
+@media only screen and (max-width: 991px) {
+  .header-top,
+  .search-block,
+  .header-navbar__bottom,
+  .shop-navbar_middle {
+    visibility: hidden;
+    display: none;
+  }
+  .search-block + ul {
+    flex-direction: row;
+  }
+  .hero-image {
+    height: 150px;
+  }
+  /* shops background position of hero image to avoid overflow of container block */
+  .bg-position-center {
+    background-position: left center;
+  }
+  /* home theme 3 */
+  .carousel__container .height-600px,
+  .carousel__container .height-550px {
+    height: auto;
+  }
+
+  .carousel__container .position_right_center {
+    top: 0px;
+    right: 20px;
+    bottom: auto;
+  }
+
+  /* home theme 2 */
+  .carousel__item_half::after {
+    top: 0;
+    bottom: 0;
+  }
+}
+
+@media only screen and (max-width: 791px) {
+  .table thead,
+  .main-footer .nav-menu__center {
+    display: none !important;
+  }
+  .table td {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .map-extend-md-height {
+    height: 200px !important;
+  }
+  /*********************************
+                HOME THEMES
+  **************************************/
+  .carousel__subtitle {
+    font-size: 16px !important;
+  }
+  .carousel__title {
+    font-size: 30px !important;
+  }
+  .bg-position-sm-center {
+    background-position-x: 70%;
+  }
+  .pricing-container span {
+    font-size: 12px !important;
+  }
+  .fs-md-14 {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 461px) {
+  .main-footer .d-flex .left div:first-child {
+    display: none;
+  }
+  .height-95px {
+    height: 50px;
+  }
+  .width-95px {
+    width: 50px;
+  }
+}
+
+/********************************
+      PRODUCTS THEME 1
+********************************/
+@media only screen and (max-width: 771px) {
+  .product__hero_bottom,
+  .shop__hero_top {
+    background-image: none;
+  }
+  .pv-34 {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  body > main > header > div.container > nav > div > ul.navbar-nav.icons-menu a.nav-link {
+    margin-right: 10px !important;
+  }
+  body > main > header > div.container > nav > div > ul.navbar-nav.icons-menu li:last-child a.nav-link {
+    margin-right: 0px !important;
+  }
+  /* home theme 2 */
+  .carousel__item_half::after {
+    display: none;
+  }
+  .carousel__content {
+    background-color: rgba(255, 255, 255, .42) !important;
+  }
+  .carousel__dots-block {
+    top: 20px;
+    bottom: auto;
+  }
+}
+
+/********************************
+      Shops theme 4 card
+********************************/
+@media only screen and (max-width: 601px) {
+  .card__image {
+    max-width: 180px;
+  }
+  .custom-btn {
+    height: 35px !important;
+    min-width: 130px !important;
+    max-width: 150px !important;
+    line-height: 1.5;
+    display: inline-block;
+    text-align: center;
+  }
+  .fs-34 {
+    font-size: 24px !important;
+  }
+}
+@media only screen and (max-width: 551px) {
+  .card__image {
+    min-width: 100%;
+  }
+  /* .owl-carousel .owl-item img {
+    width: auto !important;
+    max-height: 150px;
+  } */
+  .card_position_half .card__link {
+    width: 100%;
+  }
+  .card_position_half {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  /* home themes */
+  .carousel__link {
+    width: auto !important;
+  }
+}
