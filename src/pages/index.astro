@@ -3,16 +3,15 @@ import Layout from "../layouts/Layout.astro";
 import ProductCard from "../components/product-card/index.astro";
 import ProductCardWithShadow from "../components/product-card-with-shadow/index.astro";
 // images
-import TabPRoductImg from "../assets/images/product.png";
-import TabPRoductImg1 from "../assets/images/product-2.png";
-import Cat1 from "../assets/images/long-cheer-right.png";
 import Cat2 from "../assets/images/left-cheer-thik.png";
 import Cat3 from "../assets/images/cheer-skyblue.png";
 import getStorePageByType from "../helpers/services/pages/by-type";
 import getNewArrivals from "../helpers/services/products/new";
+import getCategories from "../helpers/services/products/categories";
 // helpers
 const pageData = await getStorePageByType("home");
 const newProducts = await getNewArrivals(3);
+const newCategories = await getCategories();
 ---
 
 <!-- todo: cache requests -->
@@ -119,12 +118,18 @@ const newProducts = await getNewArrivals(3);
 						<div class="row">
 							<!-- product card item -->
 							{
-								Array.from({ length: 8 }).map((_) => (
+								Array.from({ length: 8 }).map((_, index) => (
 									<ProductCard
 										name={`Apple new Airpods`}
 										regular_price={150000}
 										sale_price={140000}
-										image={TabPRoductImg1}
+										image={
+											index % 3
+												? newProducts[2].images[0].src
+												: index % 2
+												? newProducts[1].images[0].src
+												: newProducts[0].images[0].src
+										}
 									/>
 								))
 							}
@@ -139,12 +144,18 @@ const newProducts = await getNewArrivals(3);
 						<div class="row">
 							<!-- product card item -->
 							{
-								Array.from({ length: 4 }).map((_) => (
+								Array.from({ length: 4 }).map((_, index) => (
 									<ProductCard
 										name={`Apple new Airpods`}
 										regular_price={150000}
 										sale_price={140000}
-										image={TabPRoductImg}
+										image={
+											index % 3
+												? newProducts[2].images[0].src
+												: index % 2
+												? newProducts[1].images[0].src
+												: newProducts[0].images[0].src
+										}
 									/>
 								))
 							}
@@ -159,12 +170,18 @@ const newProducts = await getNewArrivals(3);
 						<div class="row">
 							<!-- product card item -->
 							{
-								Array.from({ length: 3 }).map((_) => (
+								Array.from({ length: 3 }).map((_, index) => (
 									<ProductCard
 										name={`Apple new Airpods`}
 										regular_price={150000}
 										sale_price={140000}
-										image={TabPRoductImg1}
+										image={
+											index % 3
+												? newProducts[2].images[0].src
+												: index % 2
+												? newProducts[1].images[0].src
+												: newProducts[0].images[0].src
+										}
 									/>
 								))
 							}
@@ -184,7 +201,13 @@ const newProducts = await getNewArrivals(3);
 										name={`Apple new Airpods`}
 										regular_price={150000}
 										sale_price={140000}
-										image={index % 2 ? TabPRoductImg1 : TabPRoductImg}
+										image={
+											index % 3
+												? newProducts[2].images[0].src
+												: index % 2
+												? newProducts[1].images[0].src
+												: newProducts[0].images[0].src
+										}
 									/>
 								))
 							}
@@ -198,103 +221,60 @@ const newProducts = await getNewArrivals(3);
 				<div class="col-sm-12 mb-40px">
 					<div class="row">
 						<div class="col-sm-12">
-							<h1 class="fs-24 color-black">Vente flash</h1>
-							<h2 class="fs-14 color-black">Promotion limitée</h2>
-							<div
-								class="height-224px bg-orange-dark shop__hero_top bg-long-cheer_right bg-cover p-20px d-flex align-items-center"
-								style={`background-image: url(${Cat1})`}
-							>
-								<div class="col-sm-12 col-md-6 col-lg-4 pr-0 pl-0">
-									<h3 class="mb-3 color-black-2 fs-24 mt-1 width-180px">
-										Product place hoder
-									</h3>
-									<p class="mb-3 color-black-2 col-sm-12 col-md-9 pl-0 fs-14">
-										Lorem ipsum dolor sit amet, mel virtute feugiat an.
-									</p>
-									<div class="d-flex flex-column flex-sm-row align-items-start">
-										<ul
-											class="pagination custom-pagination d-flex justify-content-end mr-60px"
-										>
-											<li class="page-item mr-10 active">
-												<span
-													class="page-link border-green bg-green p-2 text-center"
-												>
-													12
-												</span>
-											</li>
-											<li class="page-item mr-10 active">
-												<span
-													class="page-link border-green bg-green p-2 text-center"
-												>
-													12
-												</span>
-											</li>
-											<li class="page-item mr-10 active">
-												<span
-													class="page-link border-green bg-green p-2 text-center"
-												>
-													12
-												</span>
-											</li>
-										</ul>
-										<a
-											href="/"
-											class="height-32 btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
-											>Button</a
-										>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- end of flash vente -->
-
-				<!-- flash vente -->
-				<div class="col-sm-12 mb-40px">
-					<div class="row">
-						<div class="col-sm-12 col-lg-6 pr-lg-0">
-							<div
-								class="height-370px bg-orange-dark shop__hero_top bg-cheer_left_thik bg-cover p-20px d-flex align-items-center"
-								style={`background-image: url(${Cat2})`}
-							>
-								<div
-									class="col-sm-12 offset-md-6 col-md-6 offset-md-6 col-lg-6 pr-0 pl-0 text-right"
-								>
-									<h3 class="pl-3 mb-3 color-black-2 fs-25">
-										Product place hoder
-									</h3>
-									<p class="pl-3 mb-3 color-black-2">
-										Lorem ipsum dolor sit amet, mel virtute feugiat an.
-									</p>
-									<div class="d-flex justify-content-center">
-										<a
-											href="/"
-											class="height-32 btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
-											>Button</a
-										>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-12 col-lg-6 pl-lg-0">
-							<div
-								class="height-370px bg-skyblue-2 bg-image_skyblue p-20px bg-position-right bg-contain d-flex align-items-center"
-								style={`background-image: url(${Cat3})`}
-							>
-								<div class="col-sm-12 col-md-6 col-lg-6 pr-0 pl-0">
-									<h3 class="pr-3 mb-3 color-black-2 fs-25">
-										Product place hoder
-									</h3>
-									<p class="pr-3 mb-3 color-black-2">
-										Lorem ipsum dolor sit amet, mel virtute feugiat an.
-									</p>
-									<a
-										href="/"
-										class="btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
-										>Button</a
-									>
-								</div>
+							<h1 class="fs-24 color-black mb-3">Nouvelle collection</h1>
+							<div class="row">
+								{
+									!!newCategories?.[0] && (
+										<div class="col-sm-12 col-lg-6 pr-lg-0">
+											<div
+												class="height-370px bg-orange-dark shop__hero_top bg-cheer_left_thik bg-cover p-20px d-flex align-items-center"
+												style={`background-image: url(${Cat2})`}
+											>
+												<div class="col-sm-12 offset-md-6 col-md-6 offset-md-6 col-lg-6 pr-0 pl-0 text-right">
+													<h3 class="pl-3 mb-3 color-black-2 fs-25">
+														{newCategories[0]?.name}
+													</h3>
+													<p class="pl-3 mb-3 color-black-2">
+														{newCategories[0]?.description}
+													</p>
+													<div class="d-flex justify-content-end">
+														<a
+															href={`/category/${newCategories[0]?.slug}/`}
+															class="height-32 btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
+														>
+															Voir
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									)
+								}
+								{
+									!!newCategories?.[1] && (
+										<div class="col-sm-12 col-lg-6 pl-lg-0">
+											<div
+												class="height-370px bg-skyblue-2 bg-image_skyblue p-20px bg-position-right bg-contain d-flex align-items-center"
+												style={`background-image: url(${Cat3})`}
+											>
+												<div class="col-sm-12 col-md-6 col-lg-6 pr-0 pl-0">
+													<h3 class="pr-3 mb-3 color-black-2 fs-25">
+														{newCategories[1]?.name}
+													</h3>
+													<p class="pr-3 mb-3 color-black-2">
+														{newCategories[1]?.description}
+													</p>
+													<a
+														href={`/category/${newCategories[1]?.slug}/`}
+														class="btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
+													>
+														Voir
+													</a>
+												</div>
+											</div>
+										</div>
+									)
+								}
 							</div>
 						</div>
 					</div>

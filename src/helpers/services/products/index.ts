@@ -7,7 +7,7 @@ import httpRequest from "../../http";
  * @returns list of store products
  */
 export default async function getProducts() {
-  const { products } = await httpRequest({
+  const products = await httpRequest({
     url: globalLinks.products
   });
 
