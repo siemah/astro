@@ -354,11 +354,8 @@ header > div.container > nav.container.navbar.navbar-expand-lg.navbar-light.pr-0
   color: #b2b2b2 !important;
 }
 .hero-image {
-  background-image: url(../images/panier-hero-image.png);
-  background-repeat: no-repeat;
-  background-position: bottom;
-  height: 270px;
-  background-color: #8F8F8F;
+  height: 200px;
+  background-color: #D6F6F1;
 }
 .breadcrumb {
   border-radius: 0;

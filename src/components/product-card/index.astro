@@ -1,0 +1,100 @@
+---
+export interface Props {
+  name: string;
+  regular_price: number;
+  sale_price: number;
+  image: string;
+  class?: string;
+  href?: string;
+}
+
+const {
+  name,
+  regular_price,
+  sale_price,
+  href,
+  image,
+  class: className,
+} = Astro.props;
+---
+
+<!-- product card item -->
+<a
+  href={href || "#"}
+  class={`col-6 col-md-4 col-lg-3 overflow-hidden text-decoration-none ${className}`}
+>
+  <div
+    class="card card-product overflow-y-hidden no-border bg-lightwhite rounded-0"
+  >
+    <img class="card-img-top" src={image} alt="product name" />
+    <div class="card-body p-0 bg-white">
+      <div class="card-body__wrapper bg-white radius-0-5">
+        <button
+          href="/product/2"
+          class="card__action btn bg-green color-white btn-block no-border rounded-0 pt-1 pb-1 mb-1 mb-md-3 d-none"
+          >Button</button
+        >
+        <div class="pl-3 pr-3 pb-3 pt-0">
+          <h5 class="fs-12 color-darkgrey mb-0 text-truncate">Electronics</h5>
+          <h5 class="card-title color-black-2 mb-3 text-truncate">
+            Apple new Airpods
+          </h5>
+          <div class="card-text">
+            <div
+              class="d-flex flex-column flex-md-row justify-content-between mb-3"
+            >
+              <div class="pricing-container d-flex flex-column">
+                <span class="color-black-2">
+                  <sup>DA</sup>{regular_price || "150 000,00"}
+                </span>
+                <span class="color-darkgrey fs-12">
+                  <del><sup>DA</sup>{regular_price || "150 000, 00"}</del>
+                </span>
+              </div>
+              <div class="">
+                <label class="radio-button mb-0">
+                  <input
+                    type="radio"
+                    class="radio-button__input"
+                    id="choice1-1"
+                    name="choice1"
+                    checked=""
+                  />
+                  <span
+                    class="radio-button__control"
+                    style="background-color: #59ADFF; border-color: #59ADFF;"
+                  ></span>
+                </label>
+                <label class="radio-button mb-0">
+                  <input
+                    type="radio"
+                    class="radio-button__input"
+                    id="choice1-1"
+                    name="choice1"
+                  />
+                  <span
+                    class="radio-button__control"
+                    style="background-color: #FC4850; border-color: #FC4850;"
+                  ></span>
+                </label>
+                <label class="radio-button mb-0">
+                  <input
+                    type="radio"
+                    class="radio-button__input"
+                    id="choice1-1"
+                    name="choice1"
+                  />
+                  <span
+                    class="radio-button__control"
+                    style="background-color: #E88BFF; border-color: #E88BFF;"
+                  ></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>
+<!-- end of product card item -->
