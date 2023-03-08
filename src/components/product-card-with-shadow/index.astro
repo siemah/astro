@@ -1,0 +1,63 @@
+---
+export interface Props {
+  name: string;
+  regular_price: number;
+  sale_price: number;
+  image: {
+    src: string;
+    width: number;
+    height: number;
+  };
+  class?: string;
+  href?: string;
+}
+
+const {
+  name,
+  regular_price,
+  sale_price,
+  href,
+  image,
+  class: className,
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class={`card card-product bg-lightwhite no-underline overflow-y-hidden no-border rounded-0 ${className}`}
+>
+  <img
+    class="card-img-top"
+    src={image.src}
+    alt={name || "product name"}
+    style={`aspect-ratio: ${image.height}/${image.width};object-fit: cover`}
+  />
+  <div class="card-body p-0">
+    <div class="card-body__wrapper p-3 bg-transparent radius-0-5">
+      <h5 class="card-title color-black-2 mb-3 text-truncate fs-18">
+        {name}
+      </h5>
+      <div class="card-text">
+        <div
+          class="d-flex flex-column flex-md-row justify-content-between mb-3"
+        >
+          <div class="pricing-container d-flex flex-column">
+            <span class="color-black-2">
+              <sup>DZD</sup>{sale_price || regular_price}
+            </span>
+            {
+              !!sale_price && (
+                <span class="color-darkgrey fs-12">
+                  <del>
+                    <sup>DZD</sup>
+                    {regular_price}
+                  </del>
+                </span>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>
