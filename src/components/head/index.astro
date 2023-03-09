@@ -16,7 +16,7 @@ const pageUrl = Astro.url;
 const { title = "", description = "", image = "", ...seoProps } = Astro.props;
 const websiteDetails = await getStoreDetails(globalLinks.website);
 console.log(
-  "------------><---------------"
+  "------------><---------------",
   JSON.stringify(websiteDetails, null, 4), import.meta.env.DOMAIN)
 const domain =
   websiteDetails?.store_build_settings?.store_domain || import.meta.env.DOMAIN;
