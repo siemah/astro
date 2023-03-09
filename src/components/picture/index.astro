@@ -21,6 +21,7 @@ export interface Props {
     type?: string;
   }[];
   style?: string;
+  containerStyle?: string;
 }
 const {
   containerClass = "",
@@ -34,10 +35,15 @@ const {
   loading = "lazy",
   alt,
   style,
+  containerStyle,
 } = Astro.props;
 ---
 
-<picture class={`position-relative ${containerClass}`} id={id}>
+<picture
+  class={`position-relative ${containerClass}`}
+  id={id}
+  style={containerStyle}
+>
   {sources?.map((props) => <source {...props} />)}
   <img
     src={src}

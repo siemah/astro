@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Picture from "../components/picture/index.astro";
 import ProductCard from "../components/product-card/index.astro";
 import ProductCardWithShadow from "../components/product-card-with-shadow/index.astro";
 // images
@@ -9,6 +10,7 @@ import getStorePageByType from "../helpers/services/pages/by-type";
 import getNewArrivals from "../helpers/services/products/new";
 import getCategories from "../helpers/services/products/categories";
 import { stripHTML } from "../helpers/data";
+import { getImageLink } from "../helpers/images";
 
 const pageData = await getStorePageByType("home");
 const newProducts = await getNewArrivals(3);
@@ -22,10 +24,23 @@ const pageImage = pageData?.featured_media || "";
 	<main class="main-container js-main__container">
 		<!-- carousel section -->
 		<div
-			class="jumbotron jumbotron-fluid p-0 m-0 carousel-image bg-skyblue p-20px overflow-hidden d-flex"
-			style={`background-image: url(${pageData?.featured_media}); min-height: 350px;background-repeat: no-repeat; background-size: cover;`}
+			class="jumbotron jumbotron-fluid p-0 m-0 p-20px carousel-image bg-skyblue overflow-hidden d-flex position-relative"
+			style={`min-height: 350px;`}
 		>
-			<div class="container">
+			<Picture
+				alt={pageTitle}
+				src={pageImage}
+				sources={[
+					{
+						src: getImageLink(pageImage),
+					},
+				]}
+				containerClass="position-absolute w-100 h-100"
+				containerStyle="margin-left: -20px; margin-top: -20px;"
+				class="w-100 h-100"
+				style="object-fit: cover;object-position: center;"
+			/>
+			<div class="container position-relative">
 				<div
 					class="h-100 d-flex flex-column justify-content-center align-items-center"
 				>
