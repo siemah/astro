@@ -1,3 +1,5 @@
+import { getImage } from "@astrojs/image";
+
 /**
  * Construct image url using external image processing provider
  * @param src image source(main url)
@@ -56,4 +58,34 @@ export function generateProductImageSet(url: string, sizes: string[], dimensions
   return {
     srcSet: srcSet.join(", "),
   }
+}
+
+/**
+ * Generate favicon for the website
+ * 
+ * @param logoUrl remote url
+ * @param storeDomain website domain
+ */
+export async function generateFavicon(logoUrl: string, storeDomain: string) {
+  let favicon = null;
+
+  if (!logoUrl) return "";
+
+  const domain =
+    import.meta.env.NODE_ENV === "development"
+      ? "localhost:3000"
+      : storeDomain || import.meta.env.DOMAIN;
+  try {
+    const { src } = await getImage({
+      src: logoUrl,
+      alt: domain,
+      width: 32,
+      height: 32,
+    });
+    favicon = `http://${domain}${src}`;
+  } catch (error) {
+    favicon = "";
+  }
+
+  return favicon;
 }
