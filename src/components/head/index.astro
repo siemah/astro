@@ -1,22 +1,66 @@
 ---
+import { SEO, Props as SeoProps } from "astro-seo";
+import { getStoreDetails } from "../../helpers/services/store/details";
+import globalLinks from "../../config/links";
+import { generateFavicon } from "../../helpers/images";
 import "../../assets/css/helpers.css";
 import "../../assets/css/media.css";
 import "../../assets/css/owl.min.css";
 import "../../assets/css/owl.default.min.css";
 
-export interface Props {
-	title: string;
+export interface Props extends SeoProps {
+  image: string;
 }
 
-const { title } = Astro.props;
+const pageUrl = Astro.url;
+const { title = "", description = "", image = "", ...seoProps } = Astro.props;
+const websiteDetails = await getStoreDetails(globalLinks.website);
+const domain =
+  websiteDetails?.store_build_settings?.store_domain || import.meta.env.DOMAIN;
+let favicon = await generateFavicon(
+  websiteDetails?.store_primary_settings?.store_ui?.store_logo,
+  domain
+);
 ---
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="generator" content={Astro.generator} />
-  <title>{title}</title>
+  <meta name="generator" content={"zzenz v1.0.0"} />
+  <SEO
+    title={title}
+    titleTemplate={`%s - ${import.meta.env.DOMAIN}`}
+    canonical={`${pageUrl}`}
+    description={description}
+    openGraph={{
+      basic: {
+        title: title,
+        type: "website",
+        url: `${pageUrl}`,
+        image: image,
+      },
+      image: {
+        alt: title,
+      },
+      optional: {
+        description: description,
+        siteName: domain,
+      },
+    }}
+    twitter={{
+      title: title,
+      image: image,
+      creator: "@zzenzapp",
+      description: description,
+      site: domain,
+      card: "summary_large_image",
+      imageAlt: title,
+    }}
+    extend={{
+      ...(seoProps?.extend || {}),
+      link: [{ rel: "icon", href: favicon }, ...(seoProps?.extend?.link || [])],
+    }}
+  />
   <!-- Bootstrap CSS -->
   <link
     rel="stylesheet"

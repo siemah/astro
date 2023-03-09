@@ -8,14 +8,17 @@ import Cat3 from "../assets/images/cheer-skyblue.png";
 import getStorePageByType from "../helpers/services/pages/by-type";
 import getNewArrivals from "../helpers/services/products/new";
 import getCategories from "../helpers/services/products/categories";
-// helpers
+import { stripHTML } from "../helpers/data";
+
 const pageData = await getStorePageByType("home");
 const newProducts = await getNewArrivals(3);
 const newCategories = await getCategories();
+const pageTitle = pageData?.title || "Accueil";
+const pageDescription = stripHTML(pageData?.content || "");
+const pageImage = pageData?.featured_media || "";
 ---
 
-<!-- todo: cache requests -->
-<Layout title={pageData?.title || ""}>
+<Layout title={pageTitle} description={pageDescription} image={pageImage}>
 	<main class="main-container js-main__container">
 		<!-- carousel section -->
 		<div
