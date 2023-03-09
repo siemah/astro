@@ -82,7 +82,7 @@ export async function generateFavicon(logoUrl: string, storeDomain: string) {
       width: 32,
       height: 32,
     });
-    favicon = `http://${domain}${src}`;
+    favicon = `https://${domain}${src}`;
   } catch (error) {
     favicon = "";
   }
