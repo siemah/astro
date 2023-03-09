@@ -1,8 +1,11 @@
 ---
+import { getImageLink } from "../../helpers/images";
+import Picture from "../picture/index.astro";
+
 export interface Props {
   name: string;
   regular_price: number;
-  sale_price: number;
+  sale_price?: number|string|undefined;
   image: string;
   class?: string;
   href?: string;
@@ -14,7 +17,7 @@ const {
   sale_price,
   href,
   image,
-  class: className,
+  class: className = "",
 } = Astro.props;
 ---
 
@@ -26,18 +29,27 @@ const {
   <div
     class="card card-product overflow-y-hidden no-border bg-lightwhite rounded-0"
   >
-    <img class="card-img-top" src={image} alt="product name" />
+    <Picture
+      class="card-img-top"
+      src={image}
+      alt={name}
+      sources={[
+        {
+          src: getImageLink(image),
+        },
+      ]}
+    />
     <div class="card-body p-0 bg-white">
       <div class="card-body__wrapper bg-white radius-0-5">
         <button
-          href="/product/2"
           class="card__action btn bg-green color-white btn-block no-border rounded-0 pt-1 pb-1 mb-1 mb-md-3 d-none"
-          >Button</button
         >
+          Button
+        </button>
         <div class="pl-3 pr-3 pb-3 pt-0">
           <h5 class="fs-12 color-darkgrey mb-0 text-truncate">Electronics</h5>
           <h5 class="card-title color-black-2 mb-3 text-truncate">
-            Apple new Airpods
+            {name}
           </h5>
           <div class="card-text">
             <div
@@ -45,11 +57,18 @@ const {
             >
               <div class="pricing-container d-flex flex-column">
                 <span class="color-black-2">
-                  <sup>DA</sup>{regular_price || "150 000,00"}
+                  <sup>DA</sup>{sale_price || "150 000,00"}
                 </span>
-                <span class="color-darkgrey fs-12">
-                  <del><sup>DA</sup>{regular_price || "150 000, 00"}</del>
-                </span>
+                {
+                  !!sale_price && (
+                    <span class="color-darkgrey fs-12">
+                      <del>
+                        <sup>DA</sup>
+                        {regular_price || "150 000, 00"}
+                      </del>
+                    </span>
+                  )
+                }
               </div>
               <div class="">
                 <label class="radio-button mb-0">

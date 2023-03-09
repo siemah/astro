@@ -1,4 +1,8 @@
 ---
+import { ImgHTMLAttributes } from "@astrojs/image/components";
+import Picture from "../picture/index.astro";
+import { getImageLink } from "../../helpers/images";
+
 export interface Props {
   name: string;
   regular_price: number;
@@ -7,6 +11,8 @@ export interface Props {
     src: string;
     width: number;
     height: number;
+    sources?: any[];
+    loading?: ImgHTMLAttributes["loading"];
   };
   class?: string;
   href?: string;
@@ -24,13 +30,20 @@ const {
 
 <a
   href={href}
-  class={`card card-product bg-lightwhite no-underline overflow-y-hidden no-border rounded-0 ${className}`}
+  class={`card card-product card-product__with-picture bg-lightwhite no-underline overflow-y-hidden no-border rounded-0 ${className}`}
 >
-  <img
+  <Picture
     class="card-img-top"
     src={image.src}
     alt={name || "product name"}
-    style={`aspect-ratio: ${image.height}/${image.width};object-fit: cover`}
+    style={`aspect-ratio: ${image.height}/${image.width};object-fit: cover;z-index:1`}
+    sources={[
+      {
+        src: getImageLink(image.src),
+        height: image.height,
+        width: image.width,
+      },
+    ]}
   />
   <div class="card-body p-0">
     <div class="card-body__wrapper p-3 bg-transparent radius-0-5">
