@@ -1,0 +1,44 @@
+.ql-content h2 {
+  font-size: 2rem !important;
+}
+.ql-content h3 {
+  font-size: 1.75rem !important;
+}
+.ql-content h4 {
+  font-size: 1.5rem !important;
+}
+.ql-content h5 {
+  font-size: 1.25rem !important;
+}
+.ql-content h6 {
+  font-size: 1rem !important;
+}
+.ql-content {
+  font-size: 16px;
+}
+
+.ql-align-center {
+  text-align: center !important;
+}
+
+.ql-align-right {
+  text-align: right !important;
+}
+
+.ql-align-justify {
+  text-align: justify !important;
+}
+
+.ql-container ul {
+  list-style-type: none !important;
+}
+
+.ql-container ul li {
+  position: relative !important;
+}
+
+.ql-container ul li::before {
+  content: "»" !important;
+  position: absolute !important;
+  left: -1rem !important;
+}

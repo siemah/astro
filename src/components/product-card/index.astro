@@ -5,7 +5,7 @@ import Picture from "../picture/index.astro";
 export interface Props {
   name: string;
   regular_price: number;
-  sale_price?: number|string|undefined;
+  sale_price?: number | string | undefined;
   image: string;
   class?: string;
   href?: string;
@@ -57,14 +57,14 @@ const {
             >
               <div class="pricing-container d-flex flex-column">
                 <span class="color-black-2">
-                  <sup>DA</sup>{sale_price || "150 000,00"}
+                  <sup>DZD</sup>{sale_price || regular_price}
                 </span>
                 {
                   !!sale_price && (
                     <span class="color-darkgrey fs-12">
                       <del>
-                        <sup>DA</sup>
-                        {regular_price || "150 000, 00"}
+                        <sup>DZD</sup>
+                        {regular_price || ""}
                       </del>
                     </span>
                   )
