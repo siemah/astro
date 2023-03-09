@@ -15,15 +15,13 @@ export interface Props extends SeoProps {
 const pageUrl = Astro.url;
 const { title = "", description = "", image = "", ...seoProps } = Astro.props;
 const websiteDetails = await getStoreDetails(globalLinks.website);
-console.log(
-  "------------><---------------",
-  JSON.stringify(websiteDetails, null, 4), import.meta.env.DOMAIN)
 const domain =
-  websiteDetails?.store_build_settings?.store_domain || import.meta.env.DOMAIN;
+websiteDetails?.store_build_settings?.store_domain || import.meta.env.DOMAIN;
 let favicon = await generateFavicon(
   websiteDetails?.store_primary_settings?.store_ui?.store_logo,
   domain
-);
+  );
+  console.log("------------><---------------",domain,favicon)
 ---
 
 <head>
