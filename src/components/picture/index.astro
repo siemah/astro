@@ -1,0 +1,53 @@
+---
+import { ImgHTMLAttributes } from "@astrojs/image/components";
+
+export interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  containerClass?: string;
+  class?: ImgHTMLAttributes["class"];
+  id?: ImgHTMLAttributes["id"];
+  loading?: ImgHTMLAttributes["loading"];
+  decoding?: ImgHTMLAttributes["decoding"];
+  sources?: {
+    src?: string;
+    srcset?: string;
+    class?: string;
+    sizes?: string;
+    width?: number;
+    height?: number;
+    type?: string;
+  }[];
+  style?: string;
+}
+const {
+  containerClass = "",
+  sources,
+  src,
+  width,
+  decoding,
+  height,
+  class: className = "",
+  id,
+  loading = "lazy",
+  alt,
+  style,
+} = Astro.props;
+---
+
+<picture class={`position-relative ${containerClass}`} id={id}>
+  {sources?.map((props) => <source {...props} />)}
+  <img
+    src={src}
+    alt={alt}
+    data-type={"_image_"}
+    class={className}
+    loading={loading}
+    decoding={decoding || "async"}
+    height={height}
+    width={width}
+    style={style}
+  />
+</picture>

@@ -594,6 +594,12 @@ input {
 .card-product:hover .card-body .card-body__wrapper {
   transform: translateY(-100px);
 }
+.card-product__with-picture::before {
+  z-index: 1 !important;
+}
+.card-product__with-picture .card-body {
+  z-index: 2;
+}
 .custom-pagination.pagination li.page-item a.page-link,
 .custom-pagination.pagination .page-item.active .page-link {
   border-radius: .25rem;
