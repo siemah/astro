@@ -1244,6 +1244,22 @@ body>main>header>div.container>nav>div>ul.navbar-nav.icons-menu li:last-child a.
   text-align: center;
 }
 
+.btn:hover {
+  opacity: .8;
+}
+
+.btn-outline-success {
+  border-color: #8BC540;
+}
+
+.btn.btn-outline-success:hover {
+  background-color: #8BC540 !important;
+}
+
+.btn.btn-outline-success:hover svg {
+  color: #ffffff
+}
+
 /****************************
     COMPTES
 ***************************/
