@@ -18,14 +18,14 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
     <nav class="d-flex justify-content-between align-items-center pt-2 pb-2">
       <div class="left d-flex">
         <div class="mr-3">
-          <a href="" class="text-uppercase color-light-black no-underline">
+          <span class="text-uppercase color-light-black no-underline">
             réseaux sociaux
-          </a>
+          </span>
         </div>
         {
           !!store_social_media?.store_facebook && (
             <div class="mr-2">
-              <a href={store_social_media?.store_facebook} class="icon">
+              <a href={store_social_media?.store_facebook} class="icon" title="facebook">
                 <Facebook />
               </a>
             </div>
@@ -34,7 +34,7 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
         {
           !!store_social_media?.store_instagram && (
             <div class="mr-2">
-              <a href={store_social_media?.store_instagram} class="icon">
+              <a href={store_social_media?.store_instagram} class="icon" title="instagram">
                 <Instagram />
               </a>
             </div>
@@ -43,7 +43,7 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
         {
           !!store_social_media?.store_tiktok && (
             <div class="mr-2">
-              <a href={store_social_media?.store_tiktok} class="icon">
+              <a href={store_social_media?.store_tiktok} class="icon" title="tiktok">
                 <Tiktok />
               </a>
             </div>
@@ -52,7 +52,7 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
         {
           !!store_social_media?.store_youtube && (
             <div class="mr-2">
-              <a href={store_social_media?.store_youtube} class="icon">
+              <a href={store_social_media?.store_youtube} class="icon" title="youtube">
                 <Youtube />
               </a>
             </div>
@@ -61,7 +61,7 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
         {
           !!store_social_media?.store_twitter && (
             <div class="mr-2">
-              <a href={store_social_media?.store_twitter} class="icon">
+              <a href={store_social_media?.store_twitter} class="icon" title="twitter">
                 <Twitter />
               </a>
             </div>
@@ -70,7 +70,7 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
         {
           !!store_social_media?.store_snapchat && (
             <div class="mr-2">
-              <a href={store_social_media?.store_snapchat} class="icon">
+              <a href={store_social_media?.store_snapchat} class="icon" title="snapchat">
                 <Snapchat />
               </a>
             </div>
@@ -79,7 +79,7 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
         {
           !!store_social_media?.store_linkedin && (
             <div class="mr-2">
-              <a href={store_social_media?.store_linkedin} class="icon">
+              <a href={store_social_media?.store_linkedin} class="icon" title="linkedin">
                 <Linkedin />
               </a>
             </div>

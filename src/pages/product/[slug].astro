@@ -104,6 +104,8 @@ export async function getStaticPaths() {
             <div
               class="owl-prev product-image__navigation-item bg-lightgrey d-flex justify-content-center align-items-center js-owl_navigation_prev"
               role="button"
+              aria-label="precedant"
+              aria-labelledby="precedant"
             >
               <svg width="14px" height="25px" viewBox="0 0 14 25">
                 <g
@@ -124,6 +126,8 @@ export async function getStaticPaths() {
             <div
               class="owl-next product-image__navigation-item bg-lightgrey d-flex justify-content-center align-items-center js-owl_navigation_next"
               role="button"
+              aria-label="suivant"
+              aria-labelledby="suivant"
             >
               <svg width="14px" height="25px" viewBox="0 0 14 25">
                 <g
@@ -285,6 +289,7 @@ export async function getStaticPaths() {
                         <div class="input-group-prepend">
                           <button
                             class="input-group-text bg-transparent color-green no-border"
+                            aria-label="moin"
                           >
                             -
                           </button>
@@ -298,7 +303,7 @@ export async function getStaticPaths() {
                         <div class="input-group-append">
                           <button
                             class="input-group-text bg-transparent color-green no-border"
-                            >+</button
+                            aria-label="plus">+</button
                           >
                         </div>
                       </div>
@@ -308,11 +313,13 @@ export async function getStaticPaths() {
                     >
                       <button
                         class="btn bg-green flex_1 color-white btn-block no-border rounded-0 pt-2 pb-2 width-180px fs-14"
+                        aria-label="Acheter maintenant"
                       >
                         Acheter maintenant
                       </button>
                       <button
                         class="btn btn-outline-success color-white w-auto rounded-0 pt-2 pb-2 width-180px"
+                        aria-label="Ajouter au panier"
                       >
                         <Basket color="#8BC540" />
                       </button>
@@ -371,13 +378,13 @@ export async function getStaticPaths() {
 ></script>
 <script>
   // initialize owl carousel
-  // initialize owl carousel
   var $owl = $(".owl-carousel");
   $owl.owlCarousel({
     loop: false,
     margin: 20,
     responsiveClass: true,
     dotsClass: "hidden",
+    dots: false,
     nav: false,
     autoplay: true,
     autoplayHoverPause: true,
