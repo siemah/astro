@@ -6,7 +6,7 @@ import Footer from "../components/footer/index.astro";
 import NavBar from "../components/navbar/index.astro";
 
 export interface Props extends SeoProps {
-	image: string;
+	image?: string;
 }
 
 const { ...seoProps } = Astro.props;
