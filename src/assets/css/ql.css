@@ -1,18 +1,28 @@
+a {
+  color: #8BC540;
+  text-decoration: underline;
+}
+
 .ql-content h2 {
   font-size: 2rem !important;
 }
+
 .ql-content h3 {
   font-size: 1.75rem !important;
 }
+
 .ql-content h4 {
   font-size: 1.5rem !important;
 }
+
 .ql-content h5 {
   font-size: 1.25rem !important;
 }
+
 .ql-content h6 {
   font-size: 1rem !important;
 }
+
 .ql-content {
   font-size: 16px;
 }

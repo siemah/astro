@@ -1,0 +1,120 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Picture from "../components/picture/index.astro";
+import { stripHTML } from "../helpers/data";
+import { getImageLink } from "../helpers/images";
+import { getStorePages } from "../helpers/services/pages";
+import getStorePageBySlug from "../helpers/services/pages/by-slug";
+import pageStyles from "../assets/css/page.module.css";
+import "../assets/css/ql.css";
+
+const page = await getStorePageBySlug(Astro.params.slug);
+const pageTitle = page?.title?.rendered || "";
+const pageDescription = page?.content?.rendered || "";
+const pageImage = page?.featured_media || "";
+
+export async function getStaticPaths() {
+	const { pages } = await getStorePages();
+	const paths = pages.map((page) => ({
+		params: {
+			slug: decodeURIComponent(page.slug),
+		},
+	}));
+
+	return paths;
+}
+---
+
+<Layout
+	title={pageTitle}
+	description={stripHTML(page?.excerpt?.rendered || "")}
+	image={pageImage}
+>
+	<main class="main-container js-main__container">
+		<!-- carousel section -->
+		<div
+			class="jumbotron jumbotron-fluid p-0 m-0 p-20px carousel-image bg-skyblue overflow-hidden d-flex position-relative"
+			style={`min-height: 350px;`}
+		>
+			{
+				!!pageImage && (
+					<Picture
+						alt={pageTitle}
+						src={pageImage}
+						sources={[
+							{
+								srcset: getImageLink(pageImage),
+							},
+						]}
+						containerClass={`position-absolute w-100 h-100 ${pageStyles.hero__image}`}
+						containerStyle="margin-left: -20px; margin-top: -20px;"
+						class={`w-100 h-100`}
+						style="object-fit: cover;object-position: center;"
+						loading={"eager"}
+					/>
+				)
+			}
+			<div class="container position-relative">
+				<div
+					class="h-100 d-flex flex-column justify-content-center align-items-center"
+				>
+					<h1 class="card__action color-white w-auto mb-0 text-center">
+						{pageTitle}
+					</h1>
+				</div>
+			</div>
+		</div>
+		<!-- end of carousel section -->
+
+		<div class="container">
+			<!-- breadcrumb menu -->
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb mb-0 bg-white py-4 pl-0 border-bottom-grey">
+					<li class="breadcrumb-item" aria-current="page">
+						<a class="color-black" href="/">Accueil</a>
+					</li>
+					<li class="breadcrumb-item" aria-current="page">
+						<a class="color-black" href="/shop/1/">{pageTitle}</a>
+					</li>
+				</ol>
+			</nav>
+			<!-- end of breadcrumb menu -->
+
+			<div class="row mb-108px">
+				<!-- featured products -->
+				<div class="col-sm-12 mb-40px">
+					<!-- products cards list -->
+					<div class="row discover__products-container">
+						<div class="col-sm-12">
+							<div class="ql-content" set:html={pageDescription} />
+						</div>
+					</div>
+					<!-- end of products cards list -->
+				</div>
+				<!-- end of featured product -->
+			</div>
+		</div>
+	</main>
+</Layout>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+	integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+	crossorigin="anonymous"
+	referrerpolicy="no-referrer"
+></script>
+<script>
+	// initialize owl carousel
+	var $owl = $(".owl-carousel");
+	$owl.owlCarousel({
+		loop: false,
+		margin: 20,
+		responsiveClass: true,
+		dots: true,
+		dotsClass: "carousel__dots-block",
+		dotClass: "carousel__dot radius-2",
+		nav: false,
+		autoplay: false,
+		autoplayHoverPause: true,
+		items: 1,
+	});
+</script>

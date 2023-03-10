@@ -1,3 +1,4 @@
+import globalLinks from "../../../config/links";
 import httpRequest from "../../http";
 
 /**
@@ -5,7 +6,7 @@ import httpRequest from "../../http";
  * @param endpointUrl url to the server where the data will get from
  * @returns array of store pages if there is any
  */
-export async function getStorePages(endpointUrl: string) {
+export async function getStorePages(endpointUrl = globalLinks.pages) {
   let results = {
     pages: []
   };

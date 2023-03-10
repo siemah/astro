@@ -1,0 +1,10 @@
+.hero__image::after {
+  content: "";
+  position: absolute;
+  background-color: rgba(33, 33, 33, .48);
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  backdrop-filter: blur(5px);
+}
