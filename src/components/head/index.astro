@@ -59,10 +59,19 @@ let favicon = await generateFavicon(
     }}
     extend={{
       ...(seoProps?.extend || {}),
-      link: [{ rel: "icon", href: favicon }, ...(seoProps?.extend?.link || [])],
+      link: [
+        { rel: "icon", href: favicon },
+        { rel: "preconnect", href: "https://images.weserv.nl" },
+        { rel: "dns-prefetch", href: "https://images.weserv.nl" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "dns-prefetch", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://images.zzenz.com" },
+        { rel: "dns-prefetch", href: "https://images.zzenz.com" },
+        ...(seoProps?.extend?.link || []),
+      ],
     }}
   />
-  <!-- Bootstrap CSS -->
+  <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
     rel="stylesheet"
