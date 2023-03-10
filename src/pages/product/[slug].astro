@@ -31,6 +31,18 @@ export async function getStaticPaths() {
   title={product.name}
   description={stripHTML(product.short_description)}
   image={product?.images?.[0].src}
+  extend={{
+    link: [
+      {
+        rel: "preload",
+        as: "image",
+        href: getImageLink(product.images?.[0]?.src),
+        type: "image/webp",
+        // @ts-ignore
+        fetchpriority: "high",
+      },
+    ],
+  }}
 >
   <main class="main-container js-main__container">
     <!-- main content -->
@@ -70,7 +82,7 @@ export async function getStaticPaths() {
                           style="object-fit: contain;object-position: center;"
                           sources={[
                             {
-                              src: getImageLink(image.src),
+                              srcset: getImageLink(image.src),
                             },
                           ]}
                         />

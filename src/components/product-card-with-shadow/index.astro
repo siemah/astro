@@ -39,7 +39,7 @@ const {
     style={`aspect-ratio: ${image.height}/${image.width};object-fit: cover;z-index:1`}
     sources={[
       {
-        src: getImageLink(image.src),
+        srcset: getImageLink(image.src),
         height: image.height,
         width: image.width,
       },
