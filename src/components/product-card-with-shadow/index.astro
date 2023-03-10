@@ -37,6 +37,7 @@ const {
     src={image.src}
     alt={name || "product name"}
     style={`aspect-ratio: ${image.height}/${image.width};object-fit: cover;z-index:1`}
+    class="h-100 w-100"
     sources={[
       {
         srcset: getImageLink(image.src),

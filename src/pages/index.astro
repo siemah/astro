@@ -32,13 +32,14 @@ const pageImage = pageData?.featured_media || "";
 				src={pageImage}
 				sources={[
 					{
-						src: getImageLink(pageImage),
+						srcset: getImageLink(pageImage),
 					},
 				]}
 				containerClass="position-absolute w-100 h-100"
 				containerStyle="margin-left: -20px; margin-top: -20px;"
 				class="w-100 h-100"
 				style="object-fit: cover;object-position: center;"
+				loading={"eager"}
 			/>
 			<div class="container position-relative">
 				<div
