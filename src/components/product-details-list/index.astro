@@ -1,0 +1,59 @@
+---
+export interface Props {
+  class?: string;
+  sku: string | undefined;
+  width: string | undefined;
+  height: string | undefined;
+  weight: string | undefined;
+  length: string | undefined;
+}
+const {
+  class: className = "",
+  height,
+  length,
+  sku,
+  weight,
+  width,
+} = Astro.props;
+---
+
+<ul class={`list list-group ${className}`}>
+  {
+    !!sku && (
+      <li class="list-inline-item px-3 py-2 mb-1 bg-white">
+        <strong class="text-uppercase">SKU:</strong>
+        {` `}
+        <span class="ms-2 text-muted">{sku}</span>
+      </li>
+    )
+  }
+  {
+    (!!width || !!height) && (
+      <li class="list-inline-item px-3 py-2 mb-1 bg-white text-muted">
+        <strong class="text-uppercase text-dark">Dimensions(cm):</strong>
+        {` `}
+        <span>{width || ""}</span>
+        {` `}
+        &times;{` `}
+        <span>{height || ""}</span>
+      </li>
+    )
+  }
+  {
+    !!length && (
+      <li class="list-inline-item px-3 py-2 mb-1 bg-white text-muted">
+        <strong class="text-uppercase text-dark">Longueur(cm):</strong>
+        {` `}
+        <span class="reset-anchor ms-2">{length || ""}</span>
+      </li>
+    )
+  }
+  {
+    !!weight && (
+      <li class="list-inline-item px-3 py-2 mb-1 bg-white text-muted">
+        <strong class="text-uppercase text-dark">Poids(kg):</strong>
+        <span class="reset-anchor ms-2">{weight || ""}</span>
+      </li>
+    )
+  }
+</ul>

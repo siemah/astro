@@ -92,6 +92,15 @@
 }
 
 @media only screen and (max-width: 461px) {
+  .quantity-form__container label {
+    display: none !important;
+  }
+
+  .quantity-form__container .form-control,
+  .quantity-form__container button {
+    padding: .375rem .25rem;
+  }
+
   .main-footer .d-flex .left div:first-child {
     display: none;
   }

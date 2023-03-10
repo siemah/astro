@@ -3,6 +3,7 @@ import ProductCard from "../../components/product-card/index.astro";
 import Picture from "../../components/picture/index.astro";
 import Layout from "../../layouts/Layout.astro";
 import Basket from "../../components/icons/basket.astro";
+import ProductDetailsList from "../../components/product-details-list/index.astro";
 import { getImageLink } from "../../helpers/images";
 // assets
 import getProducts from "../../helpers/services/products";
@@ -177,6 +178,18 @@ export async function getStaticPaths() {
                       class="product__description color-light-black mb-0 ql-content"
                       set:html={product.description}
                     />
+                    <div>
+                      <h4 class="fs-12 color-light-black mb-1">
+                        Dimensions et Poids
+                      </h4>
+                      <ProductDetailsList
+                        height={product?.dimensions?.height}
+                        width={product?.dimensions?.width}
+                        length={product?.dimensions?.length}
+                        weight={product?.weight}
+                        sku={product?.sku}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -267,7 +280,7 @@ export async function getStaticPaths() {
                         Qte
                       </label>
                       <div
-                        class="quantity-container mb-2 mb-sm-0 mr-0 mr-lg-5 input-group border-green rounded-0 overflow-hidden max-width-110px"
+                        class="quantity-container mb-0 mb-sm-0 mr-0 mr-lg-5 input-group border-green rounded-0 overflow-hidden max-width-110px"
                       >
                         <div class="input-group-prepend">
                           <button
