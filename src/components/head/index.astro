@@ -60,7 +60,7 @@ let favicon = await generateFavicon(
     extend={{
       ...(seoProps?.extend || {}),
       link: [
-        { rel: "icon", href: favicon },
+        { rel: "icon", href: "/favicon.svg", type:"image/svg+xml" },
         { rel: "preconnect", href: "https://images.weserv.nl" },
         { rel: "dns-prefetch", href: "https://images.weserv.nl" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
