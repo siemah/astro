@@ -1,8 +1,15 @@
 ---
-import FbImg from "../../assets/images/icons/facebook-green.svg";
-import YbImg from "../../assets/images/icons/youtube-grey.svg";
-import IgImg from "../../assets/images/icons/instagram-grey.svg";
-import TwImg from "../../assets/images/icons/twitter-grey.svg";
+import Facebook from "../../components/icons/facebook.astro";
+import Instagram from "../../components/icons/instagram.astro";
+import Youtube from "../../components/icons/youtube.astro";
+import Twitter from "../../components/icons/twitter.astro";
+import { getStoreDetails } from "../../helpers/services/store/details";
+import globalLinks from "../../config/links";
+import Tiktok from "../icons/tiktok.astro";
+import Snapchat from "../icons/snapchat.astro";
+
+const websiteDetails = await getStoreDetails(globalLinks.website);
+const { store_social_media } = websiteDetails?.store_primary_settings;
 ---
 
 <footer class="main-footer border-top-grey">
@@ -10,28 +17,73 @@ import TwImg from "../../assets/images/icons/twitter-grey.svg";
     <nav class="d-flex justify-content-between align-items-center pt-2 pb-2">
       <div class="left d-flex">
         <div class="mr-3">
-          <a href="" class="text-uppercase color-light-black no-underline"
-            >Social Media</a
-          >
+          <a href="" class="text-uppercase color-light-black no-underline">
+            réseaux sociaux
+          </a>
         </div>
-        <div class="mr-2">
-          <a href="" class="icon"><img src={FbImg} alt="" /></a>
-        </div>
-        <div class="mr-2">
-          <a href="" class="icon"><img src={YbImg} alt="" /></a>
-        </div>
-        <div class="mr-2">
-          <a href="" class="icon"><img src={IgImg} alt="" /></a>
-        </div>
-        <div class="mr-2">
-          <a href="" class="icon"><img src={TwImg} alt="" /></a>
-        </div>
+        {
+          !!store_social_media?.store_facebook && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_facebook} class="icon">
+                <Facebook />
+              </a>
+            </div>
+          )
+        }
+        {
+          !!store_social_media?.store_instagram && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_instagram} class="icon">
+                <Instagram />
+              </a>
+            </div>
+          )
+        }
+        {
+          !!store_social_media?.store_tiktok && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_tiktok} class="icon">
+                <Tiktok />
+              </a>
+            </div>
+          )
+        }
+        {
+          !!store_social_media?.store_youtube && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_youtube} class="icon">
+                <Youtube />
+              </a>
+            </div>
+          )
+        }
+        {
+          !!store_social_media?.store_twitter && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_twitter} class="icon">
+                <Twitter />
+              </a>
+            </div>
+          )
+        }
+        {
+          !!store_social_media?.store_snapchat && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_snapchat} class="icon">
+                <Snapchat />
+              </a>
+            </div>
+          )
+        }
       </div>
       <div class="nav-menu__center d-flex">
-        <a class="nav-item nav-link color-light-black" href="#">Home</a>
-        <a class="nav-item nav-link color-light-black" href="#">Shop</a>
-        <a class="nav-item nav-link color-light-black" href="#">Product</a>
-        <a class="nav-item nav-link color-light-black" href="#">Contact</a>
+        <a class="nav-item nav-link color-light-black" href="/">Accueil</a>
+        <a class="nav-item nav-link color-light-black" href="/shop/1/">
+          Boutique
+        </a>
+        <a class="nav-item nav-link color-light-black" href="/contact/">
+          Contact
+        </a>
       </div>
       <div class="right d-flex align-items-center">
         <span class="color-light-black fs-12">Powred by&nbsp;</span>
