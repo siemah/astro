@@ -1,11 +1,12 @@
 ---
+import ProductCard from "../../components/product-card/index.astro";
 import Picture from "../../components/picture/index.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getImageLink } from "../../helpers/images";
 // assets
-import Cat from "../../assets/images/product-bottom-hero.png";
 import getProducts from "../../helpers/services/products";
 import { stripHTML } from "../../helpers/data";
+import getSimilarProductsByCategories from "../../helpers/services/products/similar";
 import "../../assets/css/ql.css";
 
 const { slug } = Astro.params;
@@ -14,6 +15,10 @@ const [product] = await getProducts({
   consumer_key: import.meta.env.WC_API_DEPLOY_CONSUMER_KEY,
   consumer_secret: import.meta.env.WC_API_DEPLOY_CONSUMER_SECRET,
 });
+const categories = product?.categories;
+const similarProducts = await getSimilarProductsByCategories(
+  categories?.[0].id
+);
 
 export async function getStaticPaths() {
   const products = await getProducts();
@@ -289,39 +294,38 @@ export async function getStaticPaths() {
       </div>
       <!-- end of product details  -->
 
-      <!-- condition de vente -->
-      <div class="row condition-block mt-3 mt-lg-5 mb-3 mb-lg-5">
-        <div class="col-sm-12 col-lg-9">
-          <a href="/" class="color-green pr-3">Condition de vente</a>&nbsp;
-          <a href="/" class="color-light-black">Condition de Livraison</a>
-          <p class="color-light-black pt-4 mb-0">
-            Idque suavitate at vix. Est no soleat aliquip temporibus. Id erat
-            accusamus principes vis. Et nec latine meliore antiopam, ne sed
-            minimum epicurei accommodare. Vero molestie lobortis mei cu, nam
-            movet saperet tacimates te.
-          </p>
+      <!-- similar products -->
+      <div class="row mt-30px">
+        <div class="fs-24 col-sm-12">
+          <h1 class="fs-24 color-black">Tu pourrais aussi aimer</h1>
+          <h2 class="fs-14">
+            <a class="color-black" href={`/category/${categories?.[0].slug}/`}>
+              Voir tout
+            </a>
+          </h2>
         </div>
       </div>
-      <!-- condition de vente -->
-
-      <div
-        class="bg-orange p-4 mb-3 mb-lg-5 product__hero_bottom"
-        style={`background-image: url(${Cat})`}
-      >
-        <div class="col-sm-12 col-md-6 offset-md-6 col-lg-4 offset-lg-8">
-          <h3 class="display-4 mb-3 color-black-2 fs-34">
-            Display place holder
-          </h3>
-          <p class="mb-1">
-            Lorem ipsum dolor sit amet, mel virtute feugiat an.
-          </p>
-          <a
-            href="/"
-            class="btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
-            >Button</a
-          >
-        </div>
+      <div class="row mb-60px">
+        <!-- product card item -->
+        {
+          similarProducts.map((currentProduct) => {
+            if (product?.slug !== currentProduct?.slug) {
+              return (
+                <ProductCard
+                  href={`/product/${currentProduct?.slug}/`}
+                  name={currentProduct?.name}
+                  regular_price={currentProduct?.regular_price}
+                  sale_price={currentProduct?.sale_price}
+                  image={currentProduct.images[0].src}
+                />
+              );
+            }
+            return null;
+          })
+        }
+        <!-- end of product card item -->
       </div>
+      <!-- end similar products -->
     </div>
     <!-- end main content -->
   </main>
