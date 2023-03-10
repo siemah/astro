@@ -7,6 +7,7 @@ import { getStoreDetails } from "../../helpers/services/store/details";
 import globalLinks from "../../config/links";
 import Tiktok from "../icons/tiktok.astro";
 import Snapchat from "../icons/snapchat.astro";
+import Linkedin from "../icons/linkedin.astro";
 
 const websiteDetails = await getStoreDetails(globalLinks.website);
 const { store_social_media } = websiteDetails?.store_primary_settings;
@@ -71,6 +72,15 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
             <div class="mr-2">
               <a href={store_social_media?.store_snapchat} class="icon">
                 <Snapchat />
+              </a>
+            </div>
+          )
+        }
+        {
+          !!store_social_media?.store_linkedin && (
+            <div class="mr-2">
+              <a href={store_social_media?.store_linkedin} class="icon">
+                <Linkedin />
               </a>
             </div>
           )
