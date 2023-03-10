@@ -3,11 +3,11 @@ import { SEO, Props as SeoProps } from "astro-seo";
 import { getStoreDetails } from "../../helpers/services/store/details";
 import globalLinks from "../../config/links";
 import { generateFavicon } from "../../helpers/images";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../../assets/css/helpers.css";
 import "../../assets/css/media.css";
 import "../../assets/css/owl.min.css";
 import "../../assets/css/owl.default.min.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export interface Props extends SeoProps {
   image: string;
@@ -63,12 +63,6 @@ let favicon = await generateFavicon(
     }}
   />
   <!-- Bootstrap CSS -->
-  <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-    crossorigin="anonymous"
-  />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
     rel="stylesheet"
