@@ -1,6 +1,5 @@
 ---
-import globalLinks from "../../config/links";
-import { getStoreDetails } from "../../helpers/services/store/details";
+import Picture from "../picture/index.astro";
 import Facebook from "../icons/facebook.astro";
 import Instagram from "../icons/instagram.astro";
 import Linkedin from "../icons/linkedin.astro";
@@ -9,8 +8,22 @@ import Tiktok from "../icons/tiktok.astro";
 import Twitter from "../icons/twitter.astro";
 import Youtube from "../icons/youtube.astro";
 
-const websiteDetails = await getStoreDetails(globalLinks.website);
-const { store_social_media } = websiteDetails?.store_primary_settings;
+export interface Props {
+  name?: string;
+  socialMedia?: any;
+  logo: {
+    src: string;
+    webp: string;
+  } | null;
+  pages?: Record<string, string>[];
+  categories: Record<string, string>[];
+  contacts?: {
+    phone?: string;
+    email?: string;
+  } | null;
+}
+
+const { name: storeName, logo, categories, pages, socialMedia } = Astro.props;
 ---
 
 <nav class="mobile-menu__container bg-dark sidebar-nav p-3 js-mobile__menu">
@@ -23,181 +36,146 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
       <span aria-hidden="true" class="color-white">&times;</span>
     </button>
   </div>
-  <div id="accordion">
+  <a href="/"
+    ><Picture
+      src={logo?.src}
+      sources={[
+        {
+          src: logo?.webp,
+        },
+      ]}
+      loading={"lazy"}
+      decoding={"async"}
+      alt={storeName}
+      height={50}
+    />
+  </a>
+  <div id="accordion" class="mt-3">
     <div class="card accordion-item no-border">
       <div class="card-header pl-0 pr-0 pt-0 pb-0" id="headingOne">
         <h5 class="mb-0 border-bottom-grey fw-300">
-          <button
+          <a
+            href="/"
             class="accordion-item__toggler btn text-left pl-0 pr-0 color-white text-uppercase btn-block"
-            data-toggle="collapse"
-            data-target="#collapseOne"
-            aria-expanded="true"
-            aria-controls="collapseOne"
           >
-            Home
-          </button>
+            Accueil
+          </a>
         </h5>
       </div>
-      <div
-        id="collapseOne"
-        class="collapse"
-        aria-labelledby="headingOne"
-        data-parent="#accordion"
-      >
-        <div class="card-body pl-0 pr-0 pt-1 pb-0 border-bottom-grey">
-          <ul class="pl-0 pr-0">
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">01-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">02-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">03-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">04-Link</a>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
-    <div class="card accordion-item no-border">
-      <div class="card-header pl-0 pr-0 pt-0 pb-0" id="heading2">
-        <h5 class="mb-0 border-bottom-grey fw-300">
-          <button
-            class="accordion-item__toggler btn text-left pl-0 pr-0 color-white text-uppercase btn-block"
-            data-toggle="collapse"
-            data-target="#collapse2"
-            aria-expanded="true"
-            aria-controls="collapse2"
+    {
+      categories?.length > 0 && (
+        <div class="card accordion-item no-border">
+          <div class="card-header pl-0 pr-0 pt-0 pb-0" id="heading2">
+            <h5 class="mb-0 border-bottom-grey fw-300">
+              <button
+                class="accordion-item__toggler btn text-left pl-0 pr-0 color-white text-uppercase btn-block"
+                data-toggle="collapse"
+                data-target="#collapse2"
+                aria-expanded="true"
+                aria-controls="collapse2"
+              >
+                Catégories
+              </button>
+            </h5>
+          </div>
+          <div
+            id="collapse2"
+            class="collapse"
+            aria-labelledby="heading2"
+            data-parent="#accordion"
           >
-            sHop
-          </button>
-        </h5>
-      </div>
-      <div
-        id="collapse2"
-        class="collapse"
-        aria-labelledby="heading2"
-        data-parent="#accordion"
-      >
-        <div class="card-body pl-0 pr-0 pt-1 pb-0 border-bottom-grey">
-          <ul class="pl-0 pr-0">
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">01-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">02-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">03-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">04-Link</a>
-            </li>
-          </ul>
+            <div class="card-body pl-0 pr-0 pt-1 pb-0 border-bottom-grey">
+              <ul class="pl-0 pr-0">
+                {categories?.map((category) => (
+                  <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
+                    <a href={`/category/${category?.slug}/`}>
+                      {category?.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="card accordion-item no-border">
-      <div class="card-header pl-0 pr-0 pt-0 pb-0" id="heading3">
-        <h5 class="mb-0 border-bottom-grey fw-300">
-          <button
-            class="accordion-item__toggler btn text-left pl-0 pr-0 color-white text-uppercase btn-block"
-            data-toggle="collapse"
-            data-target="#collapse3"
-            aria-expanded="true"
-            aria-controls="collapse3"
-          >
-            Product
-          </button>
-        </h5>
-      </div>
-      <div
-        id="collapse3"
-        class="collapse"
-        aria-labelledby="heading3"
-        data-parent="#accordion"
-      >
-        <div class="card-body pl-0 pr-0 pt-1 pb-0 border-bottom-grey">
-          <ul class="pl-0 pr-0">
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">01-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">02-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">03-Link</a>
-            </li>
-            <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-              <a href="/">04-Link</a>
-            </li>
-          </ul>
+      )
+    }
+    {
+      pages?.map((page) => (
+        <div class="card accordion-item no-border">
+          <div class="card-header pl-0 pr-0 pt-0 pb-0" id="headingOne">
+            <h5 class="mb-0 border-bottom-grey fw-300">
+              <a
+                href={`/${page?.slug}/`}
+                class="accordion-item__toggler btn text-left pl-0 pr-0 color-white text-uppercase btn-block"
+              >
+                {page?.title}
+              </a>
+            </h5>
+          </div>
         </div>
-      </div>
-    </div>
+      ))
+    }
   </div>
   <div class="social-media d-flex pt-2 justify-content-center">
     {
-      !!store_social_media?.store_facebook && (
+      !!socialMedia?.store_facebook && (
         <div class="mr-2">
-          <a href={store_social_media?.store_facebook} class="icon">
+          <a href={socialMedia?.store_facebook} class="icon">
             <Facebook />
           </a>
         </div>
       )
     }
     {
-      !!store_social_media?.store_instagram && (
+      !!socialMedia?.store_instagram && (
         <div class="mr-2">
-          <a href={store_social_media?.store_instagram} class="icon">
+          <a href={socialMedia?.store_instagram} class="icon">
             <Instagram />
           </a>
         </div>
       )
     }
     {
-      !!store_social_media?.store_tiktok && (
+      !!socialMedia?.store_tiktok && (
         <div class="mr-2">
-          <a href={store_social_media?.store_tiktok} class="icon">
+          <a href={socialMedia?.store_tiktok} class="icon">
             <Tiktok />
           </a>
         </div>
       )
     }
     {
-      !!store_social_media?.store_youtube && (
+      !!socialMedia?.store_youtube && (
         <div class="mr-2">
-          <a href={store_social_media?.store_youtube} class="icon">
+          <a href={socialMedia?.store_youtube} class="icon">
             <Youtube />
           </a>
         </div>
       )
     }
     {
-      !!store_social_media?.store_twitter && (
+      !!socialMedia?.store_twitter && (
         <div class="mr-2">
-          <a href={store_social_media?.store_twitter} class="icon">
+          <a href={socialMedia?.store_twitter} class="icon">
             <Twitter />
           </a>
         </div>
       )
     }
     {
-      !!store_social_media?.store_snapchat && (
+      !!socialMedia?.store_snapchat && (
         <div class="mr-2">
-          <a href={store_social_media?.store_snapchat} class="icon">
+          <a href={socialMedia?.store_snapchat} class="icon">
             <Snapchat />
           </a>
         </div>
       )
     }
     {
-      !!store_social_media?.store_linkedin && (
+      !!socialMedia?.store_linkedin && (
         <div class="mr-2">
-          <a href={store_social_media?.store_linkedin} class="icon">
+          <a href={socialMedia?.store_linkedin} class="icon">
             <Linkedin />
           </a>
         </div>

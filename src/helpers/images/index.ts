@@ -74,7 +74,7 @@ export async function generateFavicon(logoUrl: string, storeDomain: string) {
   const domain =
     import.meta.env.NODE_ENV === "development"
       ? "localhost:3000"
-      : storeDomain || import.meta.env.DOMAIN;
+      : storeDomain;
   try {
     const { src } = await getImage({
       src: logoUrl,
@@ -82,7 +82,7 @@ export async function generateFavicon(logoUrl: string, storeDomain: string) {
       width: 32,
       height: 32,
     });
-    favicon = `https://${domain}${src}`;
+    favicon = src;
   } catch (error) {
     favicon = "";
   }
