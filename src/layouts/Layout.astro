@@ -4,7 +4,35 @@ import Head from "../components/head/index.astro";
 import Header from "../components/header/index.astro";
 import Footer from "../components/footer/index.astro";
 import NavBar from "../components/navbar/index.astro";
+import { getStorePages } from "../helpers/services/pages";
+import getCategories from "../helpers/services/products/categories";
+import { getStoreDetails } from "../helpers/services/store/details";
+import { getImageLink } from "../helpers/images";
 
+// get pages
+const { pages } = await getStorePages();
+// get categories
+const categories = await getCategories();
+// generate logo
+const { store_primary_settings = {}, ...storeDetails } =
+	await getStoreDetails();
+const storeName =
+	storeDetails?.store_build_settings?.store_domain || storeDetails?.store_name;
+const store_ui = store_primary_settings?.store_ui || {};
+// get contacts(email, phone)
+const logoOriginalUrl = store_primary_settings?.store_ui?.store_logo;
+const logoWebPUrl =
+	import.meta.env.MODE === "production"
+		? `${getImageLink(logoOriginalUrl)}&h=50`
+		: logoOriginalUrl;
+const logo = {
+	src: store_primary_settings?.store_ui?.store_logo,
+	webp: logoWebPUrl,
+};
+const contacts = {
+	email: store_ui?.store_contact_email,
+	phone: store_ui?.store_phone,
+};
 export interface Props extends SeoProps {
 	image?: string;
 }
@@ -15,10 +43,22 @@ const { ...seoProps } = Astro.props;
 <!DOCTYPE html>
 <html lang="en">
 	<Head {...seoProps} />
-	<NavBar />
+	<NavBar
+		pages={pages}
+		categories={categories}
+		logo={logo}
+		contacts={contacts}
+		name={storeName}
+		socialMedia={store_primary_settings?.store_social_media}
+	/>
 	<body class="overflow-x-hidden">
 		<!-- header nav -->
-		<Header />
+		<Header
+			name={storeName}
+			logo={logo}
+			contacts={contacts}
+			categories={categories}
+		/>
 		<!-- end of header nav -->
 		<slot />
 		<!-- footer -->
