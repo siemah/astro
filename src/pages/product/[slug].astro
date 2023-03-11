@@ -87,6 +87,7 @@ export async function getStaticPaths() {
                           class="w-100 h-100"
                           containerClass="w-100 h-100"
                           style="object-fit: contain;object-position: center;"
+                          id={`product-image-${index}`}
                           sources={[
                             {
                               srcset: getImageLink(image.src),
