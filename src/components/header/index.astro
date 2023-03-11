@@ -131,7 +131,7 @@ const { name: storeName, logo, categories, contacts } = Astro.props;
               src={logo?.src}
               sources={[
                 {
-                  src: logo?.webp,
+                  srcset: logo?.webp,
                 },
               ]}
               loading={"lazy"}
