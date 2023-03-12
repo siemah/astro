@@ -3,19 +3,40 @@ import Facebook from "../../components/icons/facebook.astro";
 import Instagram from "../../components/icons/instagram.astro";
 import Youtube from "../../components/icons/youtube.astro";
 import Twitter from "../../components/icons/twitter.astro";
-import { getStoreDetails } from "../../helpers/services/store/details";
-import globalLinks from "../../config/links";
 import Tiktok from "../icons/tiktok.astro";
 import Snapchat from "../icons/snapchat.astro";
 import Linkedin from "../icons/linkedin.astro";
+import Zzenz from "../icons/zzenz.astro";
 
-const websiteDetails = await getStoreDetails(globalLinks.website);
-const { store_social_media } = websiteDetails?.store_primary_settings;
+export interface Props {
+  name?: string;
+  socialMedia?: any;
+  pages?: Record<string, string>[];
+  contacts?: {
+    phone?: string;
+    email?: string;
+  } | null;
+}
+
+const { pages, socialMedia } = Astro.props;
+let presentationPage;
+let termsAndPolicyPages = [];
+pages?.forEach((page) => {
+  if (page?.page_type === "presentation") {
+    presentationPage = page;
+  } else if (["terms", "confidentiality"].includes(page?.page_type)) {
+    termsAndPolicyPages.push(page);
+  }
+});
 ---
 
-<footer class="main-footer border-top-grey bg-white position-relative z-index_2">
+<footer
+  class="main-footer border-top-grey bg-white position-relative z-index_2"
+>
   <div class="container fs-14">
-    <nav class="d-flex justify-content-between align-items-center pt-2 pb-2">
+    <nav
+      class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-2 pb-2"
+    >
       <div class="left d-flex">
         <div class="mr-3">
           <span class="text-uppercase color-light-black no-underline">
@@ -23,86 +44,126 @@ const { store_social_media } = websiteDetails?.store_primary_settings;
           </span>
         </div>
         {
-          !!store_social_media?.store_facebook && (
+          !!socialMedia?.store_facebook && (
             <div class="mr-2">
-              <a href={store_social_media?.store_facebook} class="icon" title="facebook">
+              <a
+                href={socialMedia?.store_facebook}
+                class="icon"
+                title="facebook"
+              >
                 <Facebook />
               </a>
             </div>
           )
         }
         {
-          !!store_social_media?.store_instagram && (
+          !!socialMedia?.store_instagram && (
             <div class="mr-2">
-              <a href={store_social_media?.store_instagram} class="icon" title="instagram">
+              <a
+                href={socialMedia?.store_instagram}
+                class="icon"
+                title="instagram"
+              >
                 <Instagram />
               </a>
             </div>
           )
         }
         {
-          !!store_social_media?.store_tiktok && (
+          !!socialMedia?.store_tiktok && (
             <div class="mr-2">
-              <a href={store_social_media?.store_tiktok} class="icon" title="tiktok">
+              <a href={socialMedia?.store_tiktok} class="icon" title="tiktok">
                 <Tiktok />
               </a>
             </div>
           )
         }
         {
-          !!store_social_media?.store_youtube && (
+          !!socialMedia?.store_youtube && (
             <div class="mr-2">
-              <a href={store_social_media?.store_youtube} class="icon" title="youtube">
+              <a href={socialMedia?.store_youtube} class="icon" title="youtube">
                 <Youtube />
               </a>
             </div>
           )
         }
         {
-          !!store_social_media?.store_twitter && (
+          !!socialMedia?.store_twitter && (
             <div class="mr-2">
-              <a href={store_social_media?.store_twitter} class="icon" title="twitter">
+              <a href={socialMedia?.store_twitter} class="icon" title="twitter">
                 <Twitter />
               </a>
             </div>
           )
         }
         {
-          !!store_social_media?.store_snapchat && (
+          !!socialMedia?.store_snapchat && (
             <div class="mr-2">
-              <a href={store_social_media?.store_snapchat} class="icon" title="snapchat">
+              <a
+                href={socialMedia?.store_snapchat}
+                class="icon"
+                title="snapchat"
+              >
                 <Snapchat />
               </a>
             </div>
           )
         }
         {
-          !!store_social_media?.store_linkedin && (
+          !!socialMedia?.store_linkedin && (
             <div class="mr-2">
-              <a href={store_social_media?.store_linkedin} class="icon" title="linkedin">
+              <a
+                href={socialMedia?.store_linkedin}
+                class="icon"
+                title="linkedin"
+              >
                 <Linkedin />
               </a>
             </div>
           )
         }
       </div>
-      <div class="nav-menu__center d-flex">
-        <a class="nav-item nav-link color-light-black" href="/">Accueil</a>
-        <a class="nav-item nav-link color-light-black" href="/shop/1/">
-          Boutique
-        </a>
-        <a class="nav-item nav-link color-light-black" href="/contact/">
-          Contact
-        </a>
+      <div class="nav-menu__center">
+        <div class="d-flex">
+          <a class="nav-item nav-link color-light-black" href="/">Accueil</a>
+          <a class="nav-item nav-link color-light-black" href="/shop/1/">
+            Boutique
+          </a>
+          <a class="nav-item nav-link color-light-black" href="/contact/">
+            Contact
+          </a>
+          {
+            !!presentationPage && (
+              <a
+                class="nav-item nav-link color-light-black"
+                href={`/${presentationPage?.slug}/`}
+              >
+                Présentation
+              </a>
+            )
+          }
+        </div>
+        {
+          termsAndPolicyPages?.length > 0 && (
+            <nav class="d-flex justify-content-center align-items-center pb-2">
+              <div class="d-flex">
+                {termsAndPolicyPages.map((page) => (
+                  <a
+                    class="nav-item nav-link color-light-black"
+                    href={`/${page?.slug}/`}
+                  >
+                    {page?.title}
+                  </a>
+                ))}
+              </div>
+            </nav>
+          )
+        }
       </div>
-      <div class="right d-flex align-items-center">
-        <span class="color-light-black fs-12">Powred by&nbsp;</span>
-        <img
-          src="https://www.ghitaclothe.com/static/ce0061920b791245e16381e64ca686fb/48889/1662282780545-1cfaaab3-c10a-4e2f-9b81-228a2adec254.avif"
-          alt="logo"
-          height={40}
-        />
-      </div>
+      <a href={"https://www.zzenz.com"} class="right d-flex align-items-center">
+        <span class="color-light-black fs-12">{`Powred by `}</span>
+        <Zzenz />
+      </a>
     </nav>
   </div>
 </footer>

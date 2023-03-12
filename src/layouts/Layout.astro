@@ -62,7 +62,12 @@ const { ...seoProps } = Astro.props;
 		<!-- end of header nav -->
 		<slot />
 		<!-- footer -->
-		<Footer />
+		<Footer
+			pages={pages}
+			contacts={contacts}
+			name={storeName}
+			socialMedia={store_primary_settings?.store_social_media}
+		/>
 		<!-- end footer -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 		<script

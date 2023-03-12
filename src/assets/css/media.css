@@ -53,7 +53,7 @@
 @media only screen and (max-width: 791px) {
 
   .table thead,
-  .main-footer .nav-menu__center {
+  .main-footer .nav-menu__center:first-child {
     display: none !important;
   }
 
