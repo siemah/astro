@@ -32,7 +32,7 @@ const { page } = Astro.props;
               <a class="color-black" href="/">Accueil</a>
             </li>
             <li class="breadcrumb-item" aria-current="page">
-              <a class="color-black" href="/shop">Boutique</a>
+              <a class="color-black" href="#">Boutique</a>
             </li>
           </ol>
         </nav>
@@ -198,6 +198,7 @@ const { page } = Astro.props;
             {
               page?.data?.map((product) => (
                 <ProductCard
+                  href={`/product/${product?.slug}/`}
                   name={product?.name}
                   regular_price={product?.regular_price}
                   sale_price={product?.sale_price}
