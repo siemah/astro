@@ -1,0 +1,55 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title={"Page non trouvée 404"} description={""}>
+	<main class="main-container js-main__container">
+		<!-- carousel section -->
+		<div
+			class="jumbotron jumbotron-fluid p-0 m-0 p-20px carousel-image bg-skyblue overflow-hidden d-flex position-relative"
+			style={`min-height: 350px;`}
+		>
+			<div class="container position-relative">
+				<div
+					class="h-100 d-flex flex-column justify-content-center align-items-center"
+				>
+					<h1 class="card__action w-auto mb-0 text-center mb-4">404 Erreur</h1>
+					<h2 class="h3 mb-4">Page non trouvée</h2>
+					<p class="mb-4">
+						Euh oh, on dirait que la page que vous recherchez a déménagé ou
+						n'existe plus.
+					</p>
+					<a
+						href={"/"}
+						class="card__action btn bg-green color-white btn-block no-border rounded-0 w-auto px-5 py-3"
+					>
+						Revenir vers l'accueil
+					</a>
+				</div>
+			</div>
+		</div>
+		<!-- end of carousel section -->
+	</main>
+</Layout>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+	integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+	crossorigin="anonymous"
+	referrerpolicy="no-referrer"
+></script>
+<script>
+	// initialize owl carousel
+	var $owl = $(".owl-carousel");
+	$owl.owlCarousel({
+		loop: false,
+		margin: 20,
+		responsiveClass: true,
+		dots: true,
+		dotsClass: "carousel__dots-block",
+		dotClass: "carousel__dot radius-2",
+		nav: false,
+		autoplay: false,
+		autoplayHoverPause: true,
+		items: 1,
+	});
+</script>
