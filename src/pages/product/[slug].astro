@@ -371,3 +371,44 @@ export async function getStaticPaths() {
     <!-- end main content -->
   </main>
 </Layout>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+  integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script>
+  // initialize owl carousel
+  var $owl = $(".owl-carousel");
+  $owl.owlCarousel({
+    loop: false,
+    margin: 20,
+    responsiveClass: true,
+    dotsClass: "hidden",
+    dots: false,
+    nav: false,
+    autoplay: true,
+    autoplayHoverPause: true,
+    responsive: {
+      0: {
+        items: 1,
+      },
+      600: {
+        items: 2,
+      },
+      1000: {
+        items: 3,
+      },
+    },
+  });
+
+  // handle navigation using arrow previous and next
+  // Go to the next item
+  $(".js-owl_navigation_next").click(function () {
+    $owl.trigger("next.owl.carousel");
+  });
+  // Go to the previous item
+  $(".js-owl_navigation_prev").click(function () {
+    $owl.trigger("prev.owl.carousel");
+  });
+</script>
