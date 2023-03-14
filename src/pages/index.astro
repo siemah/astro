@@ -47,7 +47,7 @@ const pageImage = pageData?.featured_media || "";
 				>
 					<a
 						href={"/shop/"}
-						class="card__action btn bg-green color-white btn-block no-border rounded-0 w-auto px-5 py-3"
+						class="card__action btn bg-green color-white btn-block no-border rounded-0 w-auto px-5 py-3 text-uppercase"
 					>
 						acheter maintenant
 					</a>
@@ -241,13 +241,26 @@ const pageImage = pageData?.featured_media || "";
 		<!-- condition de vente -->
 		{
 			!!pageDescription && (
-				<div class="jumbotron jumbotron-fluid p-0 p-5 bg-skyblue overflow-hidden mb-40px">
-					<div class="col-sm-12 text-center">
-						<span class="h4 color-light-black text-uppercase">à propos</span>
-						<p
-							class="h3 color-black pt-4 mb-0"
-							set:html={`“${pageDescription}”`}
-						/>
+				<div
+					class="jumbotron jumbotron-fluid bg-skyblue overflow-hidden mb-40px"
+					style="padding-top: 8.5rem;padding-bottom: 8.5rem;"
+				>
+					<div class="container position-relative">
+						<div class="row">
+							<div class="col-sm-12 text-center">
+								<span class="h3 color-black text-uppercase mb-4">à propos</span>
+								<p
+									class="h5 color-light-black pt-4 mb-4"
+									set:html={`“${pageDescription}”`}
+								/>
+								<a
+									href={"/shop/"}
+									class="card__action btn bg-green color-white no-border w-auto px-5 py-3 rounded-pill text-uppercase"
+								>
+									acheter maintenant
+								</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			)
