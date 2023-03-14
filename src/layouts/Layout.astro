@@ -68,41 +68,5 @@ const { ...seoProps } = Astro.props;
 			name={storeName}
 			socialMedia={store_primary_settings?.store_social_media}
 		/>
-		<!-- end footer -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script
-			src="https://code.jquery.com/jquery-3.6.4.slim.min.js"
-			integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw="
-			crossorigin="anonymous"
-		></script>
-		<script
-			src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-			integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-			crossorigin="anonymous"
-		></script>
-
-		<!-- custom js to open mobile menu -->
-		<script type="text/javascript">
-			var _overlay = $(".js-mobile__overlay");
-			var _openBtn = $(".js-mobile__menu-trigger");
-			var _closeBtn = $(".js-mobile__menu-closer");
-			var _mobileMenu = $(".js-mobile__menu");
-			var _mainContainer = $(".js-main__container");
-			// close menu
-			function closeMenu(e) {
-				e.preventDefault();
-				_mobileMenu.removeClass("show");
-				$("body").removeClass("overflow-hidden");
-				_mainContainer.removeClass("translateX");
-			}
-			_openBtn.click(function (e) {
-				e.preventDefault();
-				_mobileMenu.addClass("show");
-				$("body").addClass("overflow-hidden");
-				_mainContainer.addClass("translateX");
-			});
-			_closeBtn.click(closeMenu);
-			_overlay.click(closeMenu);
-		</script>
 	</body>
 </html>
