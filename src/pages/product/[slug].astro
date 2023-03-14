@@ -48,6 +48,10 @@ export async function getStaticPaths() {
         // @ts-ignore
         fetchpriority: "high",
       },
+      {
+        rel: "preload",
+        href: "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+      }
     ],
   }}
 >

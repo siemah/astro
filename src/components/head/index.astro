@@ -60,13 +60,21 @@ let favicon = await generateFavicon(
     extend={{
       ...(seoProps?.extend || {}),
       link: [
-        { rel: "icon", href: favicon, type:"image/png" },
+        { rel: "icon", href: favicon, type: "image/png" },
         { rel: "preconnect", href: "https://images.weserv.nl" },
         { rel: "dns-prefetch", href: "https://images.weserv.nl" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "dns-prefetch", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://images.zzenz.com" },
         { rel: "dns-prefetch", href: "https://images.zzenz.com" },
+        {
+          rel: "preload",
+          href: "https://code.jquery.com/jquery-3.6.4.slim.min.js"
+        },
+        {
+          rel: "preload",
+          href: "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        },
         ...(seoProps?.extend?.link || []),
       ],
     }}
