@@ -57,7 +57,7 @@ const pageImage = pageData?.featured_media || "";
 		<!-- end of carousel section -->
 
 		<div class="container">
-			<div class="row mb-108px">
+			<div class="row mb-40px">
 				<!-- featured products -->
 				<div class="col-sm-12 mt-40px mb-40px">
 					<!-- products cards list -->
@@ -235,7 +235,27 @@ const pageImage = pageData?.featured_media || "";
 					</div>
 				</div>
 				<!-- end of product list inside tabs -->
+			</div>
+		</div>
 
+		<!-- condition de vente -->
+		{
+			!!pageDescription && (
+				<div class="jumbotron jumbotron-fluid p-0 p-5 bg-skyblue overflow-hidden mb-40px">
+					<div class="col-sm-12 text-center">
+						<span class="h4 color-light-black text-uppercase">à propos</span>
+						<p
+							class="h3 color-black pt-4 mb-0"
+							set:html={`“${pageDescription}”`}
+						/>
+					</div>
+				</div>
+			)
+		}
+		<!-- condition de vente -->
+
+		<div class="container">
+			<div class="row mb-108px">
 				<!-- flash vente -->
 				<div class="col-sm-12 mb-40px">
 					<div class="row">
