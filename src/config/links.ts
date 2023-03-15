@@ -6,6 +6,7 @@ const globalLinks = {
   products: `https://${env.WC_API_DEPLOY_URL}/wp-json/wc/v3/store/${env.VENDOR_ID}/products`,
   apiProducts: `https://${env.WC_API_DEPLOY_URL}/wp-json/wc/v3/products`,
   productsCategories: `https://${env.WC_API_DEPLOY_URL}/wp-json/wc/v3/store/${env.VENDOR_ID}/products/categories`,
+  apiCategories: `https://${env.WC_API_DEPLOY_URL}/wp-json/wc/v3/products/categories`,
   page: `https://${env.WC_API_DEPLOY_URL}/wp-json/wp/v2/pages`,
 };
 export default globalLinks;

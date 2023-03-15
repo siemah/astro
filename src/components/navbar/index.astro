@@ -101,7 +101,7 @@ const { name: storeName, logo, categories, pages, socialMedia } = Astro.props;
               <ul class="pl-0 pr-0">
                 {categories?.map((category) => (
                   <li class="text-left pb-1 fw-300 pt-1 accordion__list-item">
-                    <a href={`/category/${category?.slug}/`}>
+                    <a href={`/category/${category?.slug}/1/`}>
                       {category?.name}
                     </a>
                   </li>
