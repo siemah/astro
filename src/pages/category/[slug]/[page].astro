@@ -31,7 +31,7 @@ const { page } = Astro.props;
 
 <Layout
   title={category?.name}
-  image={category?.image}
+  image={category?.image || ""}
   description={category?.description}
 >
   <main class="main-container js-main__container">
