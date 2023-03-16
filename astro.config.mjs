@@ -2,13 +2,14 @@ import { defineConfig } from "astro/config";
 import image from "@astrojs/image";
 import purgecss from "astro-purgecss";
 import fonts from "astro-fonts-next";
-
 import sitemap from "@astrojs/sitemap";
+import robotsTxt from "astro-robots-txt";
 
 // https://astro.build/config
+const site = `https://${process.env.DOMAIN}`;
 export default defineConfig({
   output: "static",
-  site: `https://${process.env.DOMAIN}`,
+  site,
   integrations: [
     image({
       serviceEntryPoint: "@astrojs/image/sharp"
@@ -26,6 +27,9 @@ export default defineConfig({
       changefreq: "daily",
       priority: 0.9,
       lastmod: new Date(),
-    })
+    }),
+    robotsTxt({
+      host: site
+    }),
   ]
 });
