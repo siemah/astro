@@ -701,6 +701,11 @@ astro-fonts-next@^1.0.5:
   dependencies:
     cheerio "^1.0.0-rc.12"
 
+astro-google-fonts-optimizer@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/astro-google-fonts-optimizer/-/astro-google-fonts-optimizer-0.2.2.tgz#93eff2a5c17713064675f70bce4c6f2fc4c2c50f"
+  integrity sha512-YQxp/ExF3NzUomAGuu1VKecO7/ETRnhnE50gqwAqfpbGPZFj4MYa4XxK1ukBg3R63QmKuE5uurOiKmXiLzttuw==
+
 astro-purgecss@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/astro-purgecss/-/astro-purgecss-2.0.1.tgz#3f755cf75a81b01b6d5c52cb22b629ecde55806f"

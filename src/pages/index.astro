@@ -21,7 +21,6 @@ const pageTitle = pageData?.title || "Accueil";
 const pageDescription = stripHTML(pageData?.content || "");
 const pageImage = pageData?.featured_media || "";
 const trendingProducts = await getTrendingProducts();
-console.log(newCategories);
 ---
 
 <Layout title={pageTitle} description={pageDescription} image={pageImage}>
