@@ -133,6 +133,7 @@
 .bg-green_hover:active {
   background-color: #8BC540;
 }
+
 .bg-transparent_hover:hover,
 .bg-transparent_hover:focus,
 .bg-transparent_hover:active {
@@ -1291,5 +1292,22 @@ body>main>header>div.container>nav>div>ul.navbar-nav.icons-menu li:last-child a.
   .account-block .col-lg-6 {
     flex: 0 0 56%;
     max-width: 56%;
+  }
+}
+
+/*********************** 
+      ANIMATION
+***********************/
+.animation-pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0px rgba(139, 197, 64, 0.6);
+  }
+
+  100% {
+    box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
   }
 }
