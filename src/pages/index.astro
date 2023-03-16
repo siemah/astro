@@ -11,13 +11,17 @@ import getNewArrivals from "../helpers/services/products/new";
 import getCategories from "../helpers/services/products/categories";
 import { stripHTML } from "../helpers/data";
 import { getImageLink } from "../helpers/images";
+import getTrendingProducts from "../helpers/services/products/trending";
 
 const pageData = await getStorePageByType("home");
-const newProducts = await getNewArrivals(3);
+const newestProducts = await getNewArrivals(8);
+const topNewProducts = newestProducts.slice(0, 3);
 const newCategories = await getCategories();
 const pageTitle = pageData?.title || "Accueil";
 const pageDescription = stripHTML(pageData?.content || "");
 const pageImage = pageData?.featured_media || "";
+const trendingProducts = await getTrendingProducts();
+console.log(newCategories);
 ---
 
 <Layout title={pageTitle} description={pageDescription} image={pageImage}>
@@ -72,7 +76,7 @@ const pageImage = pageData?.featured_media || "";
 						<div class="col-sm-12">
 							<div class="row">
 								{
-									newProducts.map((product) => (
+									topNewProducts.map((product) => (
 										<div class="mb-40px col-12 col-sm-4 no-border no-underline">
 											<ProductCardWithShadow
 												href={`/product/${product.slug}/`}
@@ -95,37 +99,29 @@ const pageImage = pageData?.featured_media || "";
 				<nav class="products-tabs col-sm-12">
 					<div class="nav nav-tabsd-flex tabs__nav" id="nav-tab" role="tablist">
 						<div class="flex-1">
-							<h1 class="fs-24 color-black">Vente flash</h1>
-							<h2 class="fs-14 color-black">Promotion limitée</h2>
+							<h2 class="fs-24 color-black">Divers</h2>
 						</div>
 						<a
 							class="nav-item nav-link color-black-2 fs-14 active"
 							id="nav-home-tab"
 							data-toggle="tab"
 							href="#nav-collection"
-							role="tab">COLLECTION</a
+							role="tab"
 						>
+							Tendances
+						</a>
 						<a
 							class="nav-item nav-link color-black-2 fs-14"
 							id="nav-profile-tab"
 							data-toggle="tab"
 							href="#nav-display-1"
-							role="tab">DISPLAY TITLE</a
+							role="tab"
 						>
-						<a
-							class="nav-item nav-link color-black-2 fs-14"
-							id="nav-contact-tab"
-							data-toggle="tab"
-							href="#nav-display-2"
-							role="tab">DISPLAY TITLE</a
-						>
-						<a
-							class="nav-item nav-link color-black-2 fs-14"
-							id="nav-contact-tab"
-							data-toggle="tab"
-							href="#nav-all"
-							role="tab">ALL</a
-						>
+							Nouveaux
+						</a>
+						<a class="nav-item nav-link color-black-2 fs-14" href={"/shop/1/"}>
+							Voir tout
+						</a>
 					</div>
 				</nav>
 				<div class="col-sm-12 tab-content mb-40px" id="nav-tabContent">
@@ -137,18 +133,13 @@ const pageImage = pageData?.featured_media || "";
 						<div class="row">
 							<!-- product card item -->
 							{
-								Array.from({ length: 8 }).map((_, index) => (
+								trendingProducts.map((product) => (
 									<ProductCard
-										name={`Apple new Airpods`}
-										regular_price={150000}
-										sale_price={140000}
-										image={
-											index % 3
-												? newProducts[2].images[0].src
-												: index % 2
-												? newProducts[1].images[0].src
-												: newProducts[0].images[0].src
-										}
+										href={`/product/${product?.slug}/`}
+										name={product?.name}
+										regular_price={product?.regular_price}
+										sale_price={product?.sale_price}
+										image={product?.images?.[0]?.src}
 									/>
 								))
 							}
@@ -163,70 +154,13 @@ const pageImage = pageData?.featured_media || "";
 						<div class="row">
 							<!-- product card item -->
 							{
-								Array.from({ length: 4 }).map((_, index) => (
+								newestProducts.map((product) => (
 									<ProductCard
-										name={`Apple new Airpods`}
-										regular_price={150000}
-										sale_price={140000}
-										image={
-											index % 3
-												? newProducts[2].images[0].src
-												: index % 2
-												? newProducts[1].images[0].src
-												: newProducts[0].images[0].src
-										}
-									/>
-								))
-							}
-							<!-- end of product card item -->
-						</div>
-					</div>
-					<div
-						class="tab-pane fade shop__product-list"
-						id="nav-display-2"
-						role="tabpanel"
-					>
-						<div class="row">
-							<!-- product card item -->
-							{
-								Array.from({ length: 3 }).map((_, index) => (
-									<ProductCard
-										name={`Apple new Airpods`}
-										regular_price={150000}
-										sale_price={140000}
-										image={
-											index % 3
-												? newProducts[2].images[0].src
-												: index % 2
-												? newProducts[1].images[0].src
-												: newProducts[0].images[0].src
-										}
-									/>
-								))
-							}
-							<!-- end of product card item -->
-						</div>
-					</div>
-					<div
-						class="tab-pane fade shop__product-list"
-						id="nav-all"
-						role="tabpanel"
-					>
-						<div class="row">
-							<!-- product card item -->
-							{
-								Array.from({ length: 6 }).map((_, index) => (
-									<ProductCard
-										name={`Apple new Airpods`}
-										regular_price={150000}
-										sale_price={140000}
-										image={
-											index % 3
-												? newProducts[2].images[0].src
-												: index % 2
-												? newProducts[1].images[0].src
-												: newProducts[0].images[0].src
-										}
+										href={`/product/${product?.slug}/`}
+										name={product?.name}
+										regular_price={product?.regular_price}
+										sale_price={product?.sale_price}
+										image={product?.images?.[0]?.src}
 									/>
 								))
 							}
@@ -273,17 +207,21 @@ const pageImage = pageData?.featured_media || "";
 				<div class="col-sm-12 mb-40px">
 					<div class="row">
 						<div class="col-sm-12">
-							<h1 class="fs-24 color-black mb-3">Nouvelle collection</h1>
+							<h2 class="fs-24 color-black mb-3">Nouvelle collection</h2>
 							<div class="row">
 								{
 									!!newCategories?.[0] && (
 										<div class="col-sm-12 col-lg-6 pr-lg-0">
 											<div
 												class="height-370px bg-orange-dark shop__hero_top bg-cheer_left_thik bg-cover p-20px d-flex align-items-center"
-												style={`background-image: url(${Cat2})`}
+												style={`background-image: ${
+													!!newCategories?.[0]?.image
+														? "url(${newCategories?.[0]?.image})"
+														: "none"
+												}`}
 											>
 												<div class="col-sm-12 offset-md-6 col-md-6 offset-md-6 col-lg-6 pr-0 pl-0 text-right">
-													<h3 class="pl-3 mb-3 color-black-2 fs-25">
+													<h3 class="pl-3 mb-3 color-black-2 fs-48">
 														{newCategories[0]?.name}
 													</h3>
 													<p class="pl-3 mb-3 color-black-2">
@@ -291,8 +229,8 @@ const pageImage = pageData?.featured_media || "";
 													</p>
 													<div class="d-flex justify-content-end">
 														<a
-															href={`/category/${newCategories[0]?.slug}/`}
-															class="height-32 btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
+															href={`/category/${newCategories[0]?.slug}/1/`}
+															class="height-32 btn-link bg-green border-green bg-transparent_hover radius-2 p-1 pl-5 pr-5 color-white color-green_hover no-underline custom-btn"
 														>
 															Voir
 														</a>
@@ -307,18 +245,22 @@ const pageImage = pageData?.featured_media || "";
 										<div class="col-sm-12 col-lg-6 pl-lg-0">
 											<div
 												class="height-370px bg-skyblue-2 bg-image_skyblue p-20px bg-position-right bg-contain d-flex align-items-center"
-												style={`background-image: url(${Cat3})`}
+												style={`background-image: ${
+													!!newCategories?.[1]?.image
+														? "url(${newCategories?.[1]?.image})"
+														: "none"
+												}`}
 											>
 												<div class="col-sm-12 col-md-6 col-lg-6 pr-0 pl-0">
-													<h3 class="pr-3 mb-3 color-black-2 fs-25">
+													<h3 class="pr-3 mb-3 color-black-2 fs-48">
 														{newCategories[1]?.name}
 													</h3>
 													<p class="pr-3 mb-3 color-black-2">
 														{newCategories[1]?.description}
 													</p>
 													<a
-														href={`/category/${newCategories[1]?.slug}/`}
-														class="btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline custom-btn"
+														href={`/category/${newCategories[1]?.slug}/1/`}
+														class="height-32 btn-link bg-green border-green bg-transparent_hover radius-2 p-1 pl-5 pr-5 color-white color-green_hover no-underline custom-btn"
 													>
 														Voir
 													</a>

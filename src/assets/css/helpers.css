@@ -133,6 +133,11 @@
 .bg-green_hover:active {
   background-color: #8BC540;
 }
+.bg-transparent_hover:hover,
+.bg-transparent_hover:focus,
+.bg-transparent_hover:active {
+  background-color: transparent;
+}
 
 .bg-light {
   background-color: #F7F7F7 !important;
