@@ -25,7 +25,7 @@ const { page } = Astro.props;
     <!-- end of hero section -->
     <div class="container">
       <!-- breadcrumb menu -->
-      <div class="row col-sm-12 offset-lg-3 col-lg-9 pl-2">
+      <div class="row col-sm-12">
         <nav aria-label="breadcrumb p-1">
           <ol class="breadcrumb mb-0 bg-white pt-4 pb-4 pl-2 pl-lg-0">
             <li class="breadcrumb-item" aria-current="page">
@@ -41,157 +41,8 @@ const { page } = Astro.props;
 
       <!-- shop container  -->
       <div class="row shop__product-list">
-        <!-- product and filters list  -->
-        <div class="col-sm-12 col-lg-3">
-          <div class="border-top-grey pt-4 pb-4">
-            <h3 class="fs-24 color-black mb-3 text-uppercase">COLLECTION</h3>
-            <div class="fillters-container">
-              <div
-                class="d-flex align-items-center pt-1 pb-1 custom-control custom-checkbox"
-              >
-                <input
-                  type="checkbox"
-                  class="custom-control-input color-black-2 text-capitalize flex-1 fs-14 mb-0 ml-3"
-                  id="customCheck1"
-                />
-                <label
-                  class="custom-control-label flex-1 color-black-2"
-                  for="customCheck1">Smarphones</label
-                >
-                <span class="color-black-2 fs-14 color-black-2">02</span>
-              </div>
-              <div
-                class="d-flex align-items-center pt-1 pb-1 custom-control custom-checkbox"
-              >
-                <input
-                  type="checkbox"
-                  class="custom-control-input color-black-2 text-capitalize flex-1 fs-14 mb-0 ml-3"
-                  id="customCheck2"
-                />
-                <label
-                  class="custom-control-label flex-1 color-black-2"
-                  for="customCheck2">Headphones</label
-                >
-                <span class="color-black-2 fs-14 color-black-2">15</span>
-              </div>
-              <div
-                class="d-flex align-items-center pt-1 pb-1 custom-control custom-checkbox"
-              >
-                <input
-                  type="checkbox"
-                  class="custom-control-input color-black-2 text-capitalize flex-1 fs-14 mb-0 ml-3"
-                  id="customCheck3"
-                />
-                <label
-                  class="custom-control-label flex-1 color-black-2"
-                  for="customCheck3">All In One</label
-                >
-                <span class="color-black-2 fs-14 color-black-2">12</span>
-              </div>
-              <div
-                class="d-flex align-items-center pt-1 pb-1 custom-control custom-checkbox"
-              >
-                <input
-                  type="checkbox"
-                  class="custom-control-input color-black-2 text-capitalize flex-1 fs-14 mb-0 ml-3"
-                  id="customCheck4"
-                />
-                <label
-                  class="custom-control-label flex-1 color-black-2"
-                  for="customCheck4">Laptops</label
-                >
-                <span class="color-black-2 fs-14 color-black-2">20</span>
-              </div>
-            </div>
-          </div>
-          <div class="border-top-grey pt-4 pb-4">
-            <h3 class="fs-24 color-black mb-3 text-uppercase">FILTERS</h3>
-            <div class="fillters-container">
-              <div
-                class="d-flex justify-content-between align-items-center mb-3"
-              >
-                <h4 class="fs-14 color-black-2">Colleurs</h4>
-                <div
-                  class="d-block border-green radius-2 min-width-110px height-36 overflow-hidden"
-                >
-                  <select
-                    class="form-control no-border bg-white d-block color-green d-block width-100"
-                  >
-                    <option selected="">Red</option>
-                    <option>Green</option>
-                  </select>
-                </div>
-              </div>
-              <div
-                class="d-flex justify-content-between align-items-center mb-3"
-              >
-                <h4 class="fs-14 color-black-2">Tailles</h4>
-                <div
-                  class="d-block border-green radius-2 min-width-110px height-36 overflow-hidden"
-                >
-                  <select
-                    class="form-control no-border bg-white d-block color-green d-block width-100"
-                  >
-                    <option selected="">XXL</option>
-                    <option>XL</option>
-                  </select>
-                </div>
-              </div>
-              <div
-                class="d-flex justify-content-between align-items-center mb-3"
-              >
-                <h4 class="fs-14 color-black-2 mb-0">Tailles</h4>
-                <div class="d-block width-155px">
-                  <input type="hidden" name="min" class="js__input-min" />
-                  <input type="hidden" name="max" class="js__input-max" />
-                  <div id="js-nouislider"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="border-top-grey pt-4">
-            <h3 class="fs-24 color-black mb-3 text-uppercase">Autre</h3>
-            <div class="fillters-container">
-              <div
-                class="d-flex justify-content-between align-items-center mb-3"
-              >
-                <h4 class="fs-14 color-black-2">Produits par page</h4>
-                <div
-                  class="d-block border-green radius-2 min-width-110px height-36 overflow-hidden"
-                >
-                  <select
-                    class="form-control no-border bg-white d-block color-green d-block width-100"
-                  >
-                    <option selected="">06</option>
-                    <option>09</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end of product list  -->
-
         <!-- product list -->
-        <div class="col-sm-12 col-lg-9">
-          <!-- hero card image -->
-          <div class="bg-orange p-4 mb-30px shop__hero_top radius-0-5">
-            <div class="col-sm-12 col-md-6 col-lg-5">
-              <h3 class="display-4 mb-30px color-black-2 fs-24">
-                Display place holder
-              </h3>
-              <p class="mb-4 fs-14">
-                Lorem ipsum dolor sit amet, mel virtute feugiat an.
-              </p>
-              <a
-                href="/"
-                class="btn-link border-green radius-2 p-1 pl-5 pr-5 color-green color-green_hover no-underline fs-14 custom-btn"
-                >Button</a
-              >
-            </div>
-          </div>
-          <!-- end of hero card image -->
-
+        <div class="col-sm-12">
           <!-- products cards list -->
           <div class="row mb-40px">
             <!-- product card item -->
@@ -203,7 +54,7 @@ const { page } = Astro.props;
                   regular_price={product?.regular_price}
                   sale_price={product?.sale_price}
                   image={product?.images?.[0].src}
-                  class={`col-6 col-sm-4 col-lg-4`}
+                  class={`col-6 col-sm-4 col-lg-3`}
                 />
               ))
             }
