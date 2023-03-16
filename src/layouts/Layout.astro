@@ -24,7 +24,7 @@ const storeAnalytics = store_primary_settings?.store_analytics;
 const logoOriginalUrl = store_primary_settings?.store_ui?.store_logo;
 const logoWebPUrl =
 	import.meta.env.MODE === "production"
-		? `${getImageLink(logoOriginalUrl)}&h=50`
+		? `${getImageLink(logoOriginalUrl)}&h=100`
 		: logoOriginalUrl;
 const logo = {
 	src: store_primary_settings?.store_ui?.store_logo,
