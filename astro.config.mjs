@@ -5,8 +5,9 @@ import fonts from "astro-fonts-next";
 import sitemap from "@astrojs/sitemap";
 import robotsTxt from "astro-robots-txt";
 
-// https://astro.build/config
+import partytown from "@astrojs/partytown";
 const site = `https://${process.env.DOMAIN}`;
+// https://astro.build/config
 export default defineConfig({
   output: "static",
   site,
@@ -26,10 +27,15 @@ export default defineConfig({
       entryLimit: 450000,
       changefreq: "daily",
       priority: 0.9,
-      lastmod: new Date(),
+      lastmod: new Date()
     }),
     robotsTxt({
       host: site
     }),
+    partytown({
+      config: {
+        forward: ["dataLayer.push"]
+      },
+    })
   ]
 });

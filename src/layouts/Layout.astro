@@ -19,6 +19,7 @@ const { store_primary_settings = {}, ...storeDetails } =
 const storeName =
 	storeDetails?.store_build_settings?.store_domain || storeDetails?.store_name;
 const store_ui = store_primary_settings?.store_ui || {};
+const storeAnalytics = store_primary_settings?.store_analytics;
 // get contacts(email, phone)
 const logoOriginalUrl = store_primary_settings?.store_ui?.store_logo;
 const logoWebPUrl =
@@ -42,7 +43,7 @@ const { ...seoProps } = Astro.props;
 
 <!DOCTYPE html>
 <html lang="en">
-	<Head {...seoProps} />
+	<Head storeAnalytics={storeAnalytics} {...seoProps} />
 	<NavBar
 		pages={pages}
 		categories={categories}

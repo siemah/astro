@@ -1,5 +1,6 @@
 ---
 import { SEO, Props as SeoProps } from "astro-seo";
+import { GoogleAnalytics } from "@astrolib/analytics";
 import { getStoreDetails } from "../../helpers/services/store/details";
 import globalLinks from "../../config/links";
 import { generateFavicon } from "../../helpers/images";
@@ -11,10 +12,19 @@ import "../../assets/css/owl.default.min.css";
 
 export interface Props extends SeoProps {
   image?: string;
+  storeAnalytics?: {
+    "google-analytics"?: string | null;
+    "facebook-pixel"?: string | null;
+  } | null;
 }
-
 const pageUrl = Astro.url;
-const { title = "", description = "", image = "", ...seoProps } = Astro.props;
+const {
+  title = "",
+  description = "",
+  image = "",
+  storeAnalytics,
+  ...seoProps
+} = Astro.props;
 const websiteDetails = await getStoreDetails(globalLinks.website);
 const domain =
   websiteDetails?.store_build_settings?.store_domain || import.meta.env.DOMAIN;
@@ -83,4 +93,12 @@ let favicon = await generateFavicon(
       ],
     }}
   />
+  {
+    !!storeAnalytics?.["google-analytics"] && (
+      <GoogleAnalytics
+        id={storeAnalytics?.["google-analytics"]}
+        partytown={true}
+      />
+    )
+  }
 </head>
