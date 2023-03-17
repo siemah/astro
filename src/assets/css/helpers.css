@@ -4,6 +4,13 @@
 * {
   font-family: 'Poppins', sans-serif;
 }
+:root {
+  --main-color: #8BC540;
+}
+
+.gap-3 {
+  gap: 1rem !important;
+}
 
 .pv-8 {
   padding-top: 8px;
