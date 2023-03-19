@@ -1,0 +1,11 @@
+---
+export interface Props {
+  variant: "success" | "danger";
+  class?: string;
+}
+const { variant, class: className = "" } = Astro.props;
+---
+
+<div class={`d-none alert alert-${variant} ${className}`}>
+  <slot />
+</div>

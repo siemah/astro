@@ -1,4 +1,5 @@
 ---
+import Alert from "../../components/alert/index.astro";
 import ProductCard from "../../components/product-card/index.astro";
 import Picture from "../../components/picture/index.astro";
 import RadioBox from "../../components/radio-box/index.astro";
@@ -18,6 +19,13 @@ const [product] = await getProducts({
   consumer_key: import.meta.env.WC_API_DEPLOY_CONSUMER_KEY,
   consumer_secret: import.meta.env.WC_API_DEPLOY_CONSUMER_SECRET,
 });
+const productForScript = {
+  name: product?.name,
+  regular_price: product?.sale_price || product?.regular_price,
+  id: product?.id,
+  attributes: product?.attributes,
+  thumbnail: product?.images?.[0],
+};
 const categories = product?.categories;
 const similarProducts = await getSimilarProductsByCategories(
   categories?.[0].id
@@ -166,6 +174,7 @@ export async function getStaticPaths() {
                       <h1 class="fs-24 color-light-black mb-0">
                         {product.name}
                       </h1>
+                      <Alert variant={"success"} class="js-alert" />
                     </div>
                     <div class="product__price-block mb-4">
                       <div class="fs-24 color-green mb-1">
@@ -187,9 +196,16 @@ export async function getStaticPaths() {
 
                     <div class="mb-4">
                       <form
-                        class="product-choice pt-3 pb-3 pt-lg-4 pb-lg-4 border-bottom-grey"
+                        class="product-choice pt-3 pb-3 pt-lg-4 pb-lg-4 border-bottom-grey js-form"
                         action="#"
+                        data-product={JSON.stringify(productForScript)}
+                        data-facebook-pixel={JSON.stringify(productForScript)}
                       >
+                        <input
+                          type="hidden"
+                          name="product_id"
+                          value={product.id}
+                        />
                         {
                           // @ts-ignore
                           product?.attributes?.length > 0 && (
@@ -225,7 +241,7 @@ export async function getStaticPaths() {
                                   );
                                 }
                               )}
-                              <div class="invalid-feedback d-none mt-2" />
+                              <div class="invalid-feedback d-none mt-2 js-options" />
                             </div>
                           )
                         }
@@ -252,8 +268,9 @@ export async function getStaticPaths() {
                                   >
                                     <div class="input-group-prepend">
                                       <button
-                                        class="input-group-text bg-transparent color-green no-border"
+                                        class="input-group-text bg-transparent color-green no-border js-crtl__qty"
                                         aria-label="moin"
+                                        data-operation="-"
                                       >
                                         -
                                       </button>
@@ -261,21 +278,26 @@ export async function getStaticPaths() {
                                     <input
                                       type="text"
                                       class="form-control no-border color-green text-center"
-                                      value="01"
+                                      value="1"
+                                      name="quantity"
                                       aria-label="Quantite"
                                     />
                                     <div class="input-group-append">
                                       <button
-                                        class="input-group-text bg-transparent color-green no-border"
-                                        aria-label="plus">+</button
+                                        class="input-group-text bg-transparent color-green no-border js-crtl__qty"
+                                        aria-label="plus"
+                                        data-operation="+"
                                       >
+                                        +
+                                      </button>
                                     </div>
                                   </div>
                                 </div>
                                 <div class="btns-form__container d-flex">
                                   <button
-                                    class="btn bg-green flex_1 color-white btn-block no-border rounded-0 pt-2 pb-2 width-180px fs-14 animation-pulse"
+                                    class="btn bg-green flex_1 color-white btn-block no-border rounded-0 pt-2 pb-2 width-180px fs-14 animation-pulse js-buy-now"
                                     aria-label="Acheter maintenant"
+                                    type="button"
                                   >
                                     Acheter maintenant
                                   </button>
@@ -286,6 +308,10 @@ export async function getStaticPaths() {
                                     <Basket color="#8BC540" />
                                   </button>
                                 </div>
+                              </div>
+                              <div
+                                class="invalid-feedback d-none mt-2 js-quantity"
+                              >
                               </div>
                             </div>
                           </div>
@@ -392,4 +418,90 @@ export async function getStaticPaths() {
   $(".js-owl_navigation_prev").click(function () {
     $owl.trigger("prev.owl.carousel");
   });
+</script>
+<script>
+  var $btnsCtrl = $(".js-crtl__qty");
+  $btnsCtrl.click(function (e) {
+    e.preventDefault();
+    var _operation = this.dataset.operation;
+    var $parent = $(this).parent();
+    var $qtyInput =
+      _operation === "-" ? $parent.next("input") : $parent.prev("input");
+
+    var _sum = parseInt($qtyInput.val(), 10);
+    _sum = _operation === "-" ? _sum - 1 : _sum + 1;
+
+    $qtyInput.val(_sum < 1 ? 1 : _sum);
+  });
+</script>
+<script>
+  import { sendMetaEventsToServerByStore } from "../../helpers/analytics/facebook-pixel";
+  import { extractStoreKeyFromShippingUrl } from "../../helpers/data";
+  import onAddToCart from "../../helpers/form/on-add-to-cart";
+
+  const $form = $(".js-form");
+  const facebookPixelId = $("[name='facebook-pixel-id']")?.attr("content");
+  const product_stock_url = $("[name='product_stock_url']")?.attr("content");
+  const store_shipping = $("[name='store_shipping']")?.attr("content");
+  const storeKey = extractStoreKeyFromShippingUrl(store_shipping);
+  const productDetails = $form.data("product");
+
+  $form.on(
+    "submit",
+    onAddToCart({
+      mode: "add-to-cart",
+      facebookPixelId,
+      product: productDetails,
+      product_stock_url,
+      storeKey,
+    })
+  );
+  $(".js-buy-now").on(
+    "click",
+    onAddToCart({
+      mode: "buy-now",
+      facebookPixelId,
+      product: productDetails,
+      product_stock_url,
+      storeKey,
+    })
+  );
+  if (!!facebookPixelId) {
+    const fbEventID = `event.id.${Math.floor(
+      Math.random() * 1000000000000
+    )}-${Date.now()}`;
+    sendMetaEventsToServerByStore(storeKey, {
+      pixelId: `${facebookPixelId}`,
+      eventData: {
+        event_id: fbEventID,
+        event_name: "ViewContent",
+        action_source: "website",
+        event_source_url: window.location.href,
+      },
+      customData: {
+        content_name: `${productDetails?.name}`,
+        content_ids: [`${productDetails?.id}`],
+        content_type: "product",
+        contents: [{ id: `${productDetails?.id}`, quantity: 1 }],
+        value: Number(productDetails?.regular_price),
+        currency: "DZD",
+      },
+    });
+    window?.fbq(
+      "track",
+      "ViewContent",
+      {
+        content_name: `${productDetails?.name}`,
+        content_ids: [`${productDetails?.id}`],
+        content_type: "product",
+        contents: [{ id: `${productDetails?.id}`, quantity: 1 }],
+        value: productDetails?.regular_price,
+        currency: "DZD",
+        source: "zzenz",
+        version: "1.0.0",
+        timestamp: `${Date.now()}`,
+      },
+      { eventID: fbEventID }
+    );
+  }
 </script>
