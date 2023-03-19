@@ -47,16 +47,21 @@ const { ...seoProps } = Astro.props;
 
 <!DOCTYPE html>
 <html lang="en">
-	<Head storeAnalytics={storeAnalytics} {...seoProps} />
-	<NavBar
-		pages={pages}
-		categories={categories}
-		logo={logo}
-		contacts={contacts}
-		name={storeName}
-		socialMedia={store_primary_settings?.store_social_media}
+	<Head
+		storeAnalytics={storeAnalytics}
+		product_stock_url={storeDetails?.product_stock_url || ""}
+		store_shipping={storeDetails?.store_shipping || ""}
+		{...seoProps}
 	/>
 	<body class="overflow-x-hidden">
+		<NavBar
+			pages={pages}
+			categories={categories}
+			logo={logo}
+			contacts={contacts}
+			name={storeName}
+			socialMedia={store_primary_settings?.store_social_media}
+		/>
 		<!-- header nav -->
 		<Header
 			name={storeName}

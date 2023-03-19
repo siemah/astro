@@ -12,6 +12,8 @@ import "../../assets/css/owl.default.min.css";
 
 export interface Props extends SeoProps {
   image?: string;
+  product_stock_url: string;
+  store_shipping: string;
   storeAnalytics?: {
     "google-analytics"?: string | null;
     "facebook-pixel"?: string | null;
@@ -23,6 +25,8 @@ const {
   description = "",
   image = "",
   storeAnalytics,
+  product_stock_url,
+  store_shipping,
   ...seoProps
 } = Astro.props;
 const websiteDetails = await getStoreDetails(globalLinks.website);
@@ -69,6 +73,17 @@ let favicon = await generateFavicon(
     }}
     extend={{
       ...(seoProps?.extend || {}),
+      meta: [
+        {
+          name: "product_stock_url",
+          content: product_stock_url,
+        },
+        {
+          name: "store_shipping",
+          content: store_shipping,
+        },
+        ...(seoProps?.extend?.meta || []),
+      ],
       link: [
         { rel: "icon", href: favicon, type: "image/png" },
         { rel: "preconnect", href: "https://images.weserv.nl" },
@@ -115,6 +130,7 @@ let favicon = await generateFavicon(
       fbq('track', 'PageView');
     `}
     />
+    <meta name="facebook-pixel-id" content={storeAnalytics?.["facebook-pixel"]} />
     <noscript>
       <img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${storeAnalytics['facebook-pixel']}&ev=PageView&noscript=1`}/>
     </noscript>
