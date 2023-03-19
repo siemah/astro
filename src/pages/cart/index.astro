@@ -77,39 +77,38 @@ import Layout from "../../layouts/Layout.astro";
             <div class="card-item pt-3 pb-3 align-middle border-bottom-black">
               <div class="p-1 mr-2">TVA 19%</div>
             </div>
-            <div class="d-flex card-item pt-3 pb-3 align-middle">
-              <div class="p-1 mr-2">Livraison</div>
-              <div class="card__highlight p-1 pl-3 pr-3 rounded-02 bg-grey">
-                600<sup class="fs-12">DZD</sup>
+            <div
+              class="d-flex card-item pt-3 pb-3 align-middle justify-content-between"
+            >
+              <div class="p-1 mr-2">
+                Livraison
+                <a href={"/cart/checkout"} class="fs-12">changer</a>
               </div>
-            </div>
-
-            <div class="div pt-3 pb-3">
-              <button
-                class="btn bg-green color-white btn-block no-border rounded-0 pt-1 pb-1"
-                >Commander</button
+              <div
+                class="card__highlight p-1 pl-3 pr-3 rounded-02 bg-grey text-right"
               >
+                600
+                <sup class="fs-12">DZD</sup>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- end of product list  -->
 
-      <div class="condition-block bg-grey mb-5 p-3">
-        <h3 class="display-5 color-black no-underline pr-3">
-          Condition general
-        </h3>
-        <p class="color-light-black pt-4">
-          Idque suavitate at vix. Est no soleat aliquip temporibus. Id erat
-          accusamus principes vis. Et nec latine meliore antiopam, ne sed
-          minimum epicurei accommodare. Vero molestie lobortis mei cu, nam movet
-          saperet tacimates te.
-        </p>
+      <div class="div pt-3 pb-3 d-flex justify-content-end mb-108px">
+        <a
+          class="btn bg-green btn-lg color-white btn-block no-border rounded-0 pt-1 pb-1"
+          href={"/cart/checkout/"}
+          >Commander
+        </a>
       </div>
     </div>
-    <!-- end main content -->
   </main>
 </Layout>
+<!-- end of product list  -->
+
+<!-- end main content -->
+
 <script>
   import CartStorage from "../../helpers/storage";
 
@@ -121,8 +120,6 @@ import Layout from "../../layouts/Layout.astro";
     cart.getItemsDetails(),
     cart.getShippingLines(),
   ]);
-  console.log(lineItems, products, shippingLines);
-  // todo: loop over lineitems
   // @ts-ignore
   lineItems?.map((lineItem) => {
     const product = products[lineItem.product_id];
@@ -196,8 +193,7 @@ import Layout from "../../layouts/Layout.astro";
         </td>
     </tr>`;
   }
-  // todo: get product details from products object using lineItems?.product_id
-  // todo: render items using dom
+
   const $lineItemsTotal = document.querySelector(".js-line-items-total");
   const $cartBody = document.querySelector(".js-cart-details");
   $lineItemsTotal.textContent = `${lineItemsTotal}`;
