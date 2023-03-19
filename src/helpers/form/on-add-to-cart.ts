@@ -77,7 +77,7 @@ const onAddToCart = (config: AddToCartParamsTypes) => async (event: SubmitEvent)
     content_name: product.name,
     price: product?.price,
     regular_price: product?.regular_price,
-    contents: [{ id: product.wordpress_id, quantity: 1, product_build_id: product.id }],
+    contents: [{ id: product.id, quantity: 1, product_build_id: product.id }],
     timestamp: Date.now()
   });
   // form data
@@ -120,7 +120,7 @@ const onAddToCart = (config: AddToCartParamsTypes) => async (event: SubmitEvent)
   } else {
     const cart = new CartStorage();
     const productDetails = {
-      id: String(product.wordpress_id),
+      id: String(product.id),
       slug: product.slug,
       name: product.name,
       regular_price: product.price || product.regular_price,
