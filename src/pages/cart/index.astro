@@ -111,19 +111,20 @@ import Layout from "../../layouts/Layout.astro";
 <script>
   import CartStorage from "../../helpers/storage";
 
-  let renderUI = "";
-  let lineItemsTotal = 0;
-  const cart = new CartStorage();
-  const [lineItems = [], products = {}, shippingLines] = await Promise.all([
-    cart.getAllItems(),
-    cart.getItemsDetails(),
-    cart.getShippingLines(),
-  ]);
-  // @ts-ignore
-  lineItems?.map((lineItem) => {
-    const product = products[lineItem.product_id];
-    lineItemsTotal += lineItem?.quantity * product?.regular_price;
-    const tr = `
+  const renderItems = async () => {
+    const cart = new CartStorage();
+    let renderUI = "";
+    let lineItemsTotal = 0;
+    const [lineItems = [], products = {}, shippingLines] = await Promise.all([
+      cart.getAllItems(),
+      cart.getItemsDetails(),
+      cart.getShippingLines(),
+    ]);
+    // @ts-ignore
+    lineItems?.map((lineItem, index) => {
+      const product = products[lineItem.product_id];
+      lineItemsTotal += lineItem?.quantity * product?.regular_price;
+      const tr = `
       <tr class="border-bottom-black">
         <td
           class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
@@ -173,16 +174,21 @@ import Layout from "../../layouts/Layout.astro";
           <sup>DZD</sup>
         </td>
         <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
-          <button class="bg-transparent no-border">&times;</button>
+          <button 
+            class="bg-transparent no-border js-cart__remove-item"
+            data-item="${index}"
+          >
+            &times;
+          </button>
         </td>
       </tr>
     `;
-    renderUI += tr;
-  });
+      renderUI += tr;
+    });
 
-  // @ts-ignore
-  if (lineItems?.length <= 0) {
-    renderUI = `<tr class="border-bottom-black">
+    // @ts-ignore
+    if (lineItems?.length <= 0) {
+      renderUI = `<tr class="border-bottom-black">
       <td
         class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
         scope="row"
@@ -191,10 +197,23 @@ import Layout from "../../layouts/Layout.astro";
           <span class="panier__product-item">Votre panier est vide.</span>
         </td>
     </tr>`;
-  }
+    }
 
-  const $lineItemsTotal = document.querySelector(".js-line-items-total");
-  const $cartBody = document.querySelector(".js-cart-details");
-  $lineItemsTotal.textContent = `${lineItemsTotal}`;
-  $cartBody.innerHTML = renderUI;
+    const $lineItemsTotal = document.querySelector(".js-line-items-total");
+    const $cartBody = document.querySelector(".js-cart-details");
+    $lineItemsTotal.textContent = `${lineItemsTotal}`;
+    $cartBody.innerHTML = renderUI;
+  };
+  await renderItems();
+  // remove items
+  const $removeBtns = document.querySelectorAll(".js-cart__remove-item");
+  $removeBtns.forEach(($btn) => {
+    $btn.addEventListener("click", async () => {
+      // @ts-ignore
+      const itemIndex = $btn.dataset?.["item"];
+      const cart = new CartStorage();
+      const res = await cart.removeItemByIndex(Number(itemIndex));
+      await renderItems();
+    });
+  });
 </script>
