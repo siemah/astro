@@ -362,6 +362,7 @@ export async function getStaticPaths() {
                 <ProductCard
                   href={`/product/${currentProduct?.slug}/`}
                   name={currentProduct?.name}
+                  category={currentProduct?.categories?.[0]?.name}
                   regular_price={currentProduct?.regular_price}
                   sale_price={currentProduct?.sale_price}
                   image={currentProduct.images[0].src}

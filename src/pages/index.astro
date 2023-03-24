@@ -3,9 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import Picture from "../components/picture/index.astro";
 import ProductCard from "../components/product-card/index.astro";
 import ProductCardWithShadow from "../components/product-card-with-shadow/index.astro";
-// images
-import Cat2 from "../assets/images/left-cheer-thik.png";
-import Cat3 from "../assets/images/cheer-skyblue.png";
 import getStorePageByType from "../helpers/services/pages/by-type";
 import getNewArrivals from "../helpers/services/products/new";
 import getCategories from "../helpers/services/products/categories";
@@ -136,6 +133,7 @@ const trendingProducts = await getTrendingProducts();
 									<ProductCard
 										href={`/product/${product?.slug}/`}
 										name={product?.name}
+										category={product?.categories?.[0]?.name}
 										regular_price={product?.regular_price}
 										sale_price={product?.sale_price}
 										image={product?.images?.[0]?.src}
