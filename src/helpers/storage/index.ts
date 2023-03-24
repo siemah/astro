@@ -49,7 +49,7 @@ export default class CartStorage {
    * Get all items inside customer cart
    * @returns list of cart items
    */
-  getAllItems() {
+  getAllItems(): Promise<string | any[]> {
     return new Promise(function (resolve, reject) {
       let cart: string | [] | null = localStorage.getItem(CART_NAME);
 

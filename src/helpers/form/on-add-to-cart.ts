@@ -57,10 +57,12 @@ const cleanAndShowErrors = (errors: Record<string, string>) => {
  * 
  * @param message notification message
  */
-const showAddToCartNotification = (message: string) => {
+const showAddToCartNotification = (message: string, numberOfItems: number) => {
+  const $cartItems = document.querySelector(".js-cart-items");
   const $alert = document.querySelector(".js-alert");
   $alert.classList.remove("d-none");
   $alert.textContent = message;
+  $cartItems.textContent = `${numberOfItems}`;
   hideAllElementsWithError();
   scrollIntoView($alert as HTMLElement, -150);
 }
@@ -130,7 +132,8 @@ const onAddToCart = (config: AddToCartParamsTypes) => async (event: SubmitEvent)
       cart.addItem(lineItem as LineItemType),
       cart.pushItemDetails(productDetails)
     ]);
-    mode === "add-to-cart" && showAddToCartNotification("Ajouter au panier avec succes");
+    const items = await cart.getAllItems();
+    mode === "add-to-cart" && showAddToCartNotification("Ajouter au panier avec succes", items?.length);
     !!facebookPixelId && customEvent("ProductStockCheck", {
       status: "instock"
     });
