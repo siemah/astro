@@ -421,15 +421,15 @@ export async function getStaticPaths() {
   });
 </script>
 <script>
-  var $btnsCtrl = $(".js-crtl__qty");
+  const $btnsCtrl = $(".js-crtl__qty");
   $btnsCtrl.click(function (e) {
     e.preventDefault();
-    var _operation = this.dataset.operation;
-    var $parent = $(this).parent();
-    var $qtyInput =
+    const _operation = this.dataset.operation;
+    const $parent = $(this).parent();
+    const $qtyInput =
       _operation === "-" ? $parent.next("input") : $parent.prev("input");
 
-    var _sum = parseInt($qtyInput.val(), 10);
+    let _sum = parseInt($qtyInput.val(), 10);
     _sum = _operation === "-" ? _sum - 1 : _sum + 1;
 
     $qtyInput.val(_sum < 1 ? 1 : _sum);

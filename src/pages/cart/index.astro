@@ -74,9 +74,6 @@ import Layout from "../../layouts/Layout.astro";
                 <sup>DZD</sup>
               </div>
             </div>
-            <div class="card-item pt-3 pb-3 align-middle border-bottom-black">
-              <div class="p-1 mr-2">TVA 19%</div>
-            </div>
             <div
               class="d-flex card-item pt-3 pb-3 align-middle justify-content-between"
             >
@@ -93,9 +90,10 @@ import Layout from "../../layouts/Layout.astro";
             </div>
             <div class="div pt-3 pb-3 d-flex">
               <a
-                class="btn bg-green btn-lg btn-block color-white no-border rounded-0 pt-1 pb-1"
+                class="btn bg-green btn-lg btn-block color-white no-border rounded-0 pt-2 pb-2 fs-16"
                 href={"/cart/checkout/"}
-                >Commander
+              >
+                Valider votre commande
               </a>
             </div>
           </div>
@@ -109,6 +107,7 @@ import Layout from "../../layouts/Layout.astro";
 <!-- end main content -->
 
 <script>
+  import { LineItemType } from "../../helpers/cart/types";
   import CartStorage from "../../helpers/storage";
 
   const renderItems = async () => {
@@ -151,20 +150,27 @@ import Layout from "../../layouts/Layout.astro";
               <div class="input-group-prepend">
                 <button
                   class="input-group-text bg-transparent no-border js-crtl__qty"
-                  data-operation="-">-</button
+                  data-operation="-"
+                  data-item="${index}"
                 >
+                  -
+                </button>
               </div>
               <input
                 type="text"
-                class="form-control no-border text-center"
+                class="form-control no-border text-center bg-white"
                 value="${lineItem?.quantity}"
                 aria-label="Quantite"
+                readonly
               />
               <div class="input-group-append">
                 <button
                   class="input-group-text bg-transparent no-border js-crtl__qty"
-                  data-operation="+">+</button
+                  data-operation="+"
+                  data-item="${index}"
                 >
+                  +
+                </button>
               </div>
             </div>
           </div>
@@ -214,6 +220,42 @@ import Layout from "../../layouts/Layout.astro";
       const cart = new CartStorage();
       const res = await cart.removeItemByIndex(Number(itemIndex));
       await renderItems();
+    });
+  });
+  // set item quantity
+  const $btnsQtyCtrl = document.querySelectorAll(".js-crtl__qty");
+  $btnsQtyCtrl.forEach(($btn) => {
+    $btn.addEventListener("click", async function (e) {
+      e.preventDefault();
+      // const $target = e.target;
+      const _operation = this.dataset.operation;
+      const _index = this.dataset.item;
+      const $parent = this.parentNode;
+      const $qtyInput =
+        _operation === "-"
+          ? $parent.nextElementSibling
+          : $parent.previousElementSibling;
+
+      let _sum = parseInt($qtyInput.value, 10);
+      _sum = _operation === "-" ? _sum - 1 : _sum + 1;
+
+      $qtyInput.value = _sum < 1 ? 1 : _sum;
+      const cart = new CartStorage();
+      await cart.updateItemQuantityByIndex(_index, _sum);
+      const items = await cart.getAllItems();
+      const products = await cart.getItemsDetails();
+
+      if (Array.isArray(items)) {
+        const totalPrice = items?.reduce(
+          (acc: number, { product_id, quantity }: LineItemType) => {
+            const { regular_price } = products[product_id];
+            return acc + regular_price * quantity;
+          },
+          0
+        );
+        const $total = document.querySelector(".js-line-items-total");
+        $total.textContent = `${totalPrice}`;
+      }
     });
   });
 </script>
