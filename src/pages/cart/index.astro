@@ -34,7 +34,7 @@ import Layout from "../../layouts/Layout.astro";
       </nav>
       <!-- end of breadcrumb menu -->
 
-      <!-- product list  -->
+      <!-- cart content  -->
       <div class="row pt-lg-5 pb-5 panier__product-list">
         <div class="col-lg-9 pr-lg-2">
           <table class="table table-theme_black">
@@ -78,13 +78,45 @@ import Layout from "../../layouts/Layout.astro";
               class="d-flex card-item pt-3 pb-3 align-middle justify-content-between"
             >
               <div class="p-1 mr-2">
-                Livraison
-                <a href={"/cart/checkout"} class="fs-12">changer</a>
+                <div class="mb-3">Livraison</div>
+                <div class="d-flex flex-column mb-3">
+                  <label
+                    for="door"
+                    class="d-flex align-items-center form-label text-sm mb-1"
+                    ><input
+                      type="radio"
+                      name="shipping-mode"
+                      id="door"
+                      class="ml-0 mr-2"
+                      value="door"
+                      checked=""
+                    />
+                    <span>À domicile</span>
+                  </label>
+                  <label
+                    for="stop-desk"
+                    class="d-flex align-items-center form-label text-sm mb-0"
+                  >
+                    <input
+                      type="radio"
+                      name="shipping-mode"
+                      id="stop-desk"
+                      class="ml-0 mr-2"
+                      value="stop-desk"
+                    />
+                    <span>Stop desk</span>
+                  </label>
+                </div>
+                <select
+                  name={"location"}
+                  class="form-control js-shipping__location"
+                >
+                </select>
               </div>
               <div
                 class="card__highlight p-1 pl-3 pr-3 rounded-02 bg-grey text-right"
               >
-                600
+                <span class="js-shipping__total">0</span>
                 <sup class="fs-12">DZD</sup>
               </div>
             </div>
@@ -102,12 +134,13 @@ import Layout from "../../layouts/Layout.astro";
     </div>
   </main>
 </Layout>
-<!-- end of product list  -->
+<!-- end of cart content  -->
 
 <!-- end main content -->
 
 <script>
   import { LineItemType } from "../../helpers/cart/types";
+  import httpRequest from "../../helpers/http";
   import CartStorage from "../../helpers/storage";
 
   const renderItems = async () => {
@@ -257,5 +290,58 @@ import Layout from "../../layouts/Layout.astro";
         $total.textContent = `${totalPrice}`;
       }
     });
+  });
+  // get shipping locations
+  const store_shipping = document
+    .querySelector("[name='store_shipping']")
+    ?.getAttribute("content");
+  const response = await httpRequest({
+    url: store_shipping,
+  });
+  const shippingLocations = response?.data || [];
+  const $shippingLocation = document.querySelector(".js-shipping__location");
+
+  if (response.code === "success") {
+    let shippingLocationUI =
+      "<option disabled='' value='' selected>Wilaya</option>";
+    shippingLocations.forEach((item: Record<string, any>) => {
+      shippingLocationUI += `<option value="${item?.location?.code}">${item?.location?.name}</option>`;
+    });
+    $shippingLocation.innerHTML = shippingLocationUI;
+  }
+
+  $shippingLocation.addEventListener("change", async (event) => {
+    // @ts-ignore
+    const { value } = event.target;
+    const selectedShippind = shippingLocations.find(
+      ({ location }) => location.code === value
+    );
+
+    if (selectedShippind !== undefined) {
+      const $shippingMode = document.querySelector(
+        "[name=shipping-mode]:checked"
+      );
+      // @ts-ignore
+      const selectedShippingMode = $shippingMode?.value || "door";
+      const shippingTotal =
+        selectedShippingMode === "door"
+          ? selectedShippind?.cost
+          : selectedShippind?.["stop-desk-cost"] || selectedShippind?.cost || 0;
+      const cart = new CartStorage();
+      const shippingLine = {
+        method_id: "flat_rate",
+        id: selectedShippind?.zzenz_id,
+        method_title: selectedShippind?.name,
+        total: shippingTotal,
+      };
+      await cart.updateShippingLine(shippingLine);
+      const $shippingTotal = document.querySelector(".js-shipping__total");
+      $shippingTotal.textContent = shippingTotal;
+      const $total = document.querySelector(".js-line-items-total");
+      $total.textContent = `${
+        parseInt($total.textContent || "0", 10) +
+        parseInt(shippingTotal || "0", 10)
+      }`;
+    }
   });
 </script>
