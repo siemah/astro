@@ -258,8 +258,14 @@ import Layout from "../../layouts/Layout.astro";
       // @ts-ignore
       const itemIndex = $btn.dataset?.["item"];
       const cart = new CartStorage();
-      const res = await cart.removeItemByIndex(Number(itemIndex));
+      await cart.removeItemByIndex(Number(itemIndex));
       await renderItems();
+      const [shippingLine] = await cart.getShippingLines();
+      const $subtotal = document.querySelector(".js-line-items-subtotal");
+      const total = await computeOrderTotal();
+      $subtotal.textContent = `${
+        total - parseInt(shippingLine?.total || "0", 10)
+      }`;
     });
   });
   // set item quantity
@@ -282,20 +288,14 @@ import Layout from "../../layouts/Layout.astro";
       $qtyInput.value = _sum < 1 ? 1 : _sum;
       const cart = new CartStorage();
       await cart.updateItemQuantityByIndex(_index, _sum);
-      const items = await cart.getAllItems();
-      const products = await cart.getItemsDetails();
-
-      if (Array.isArray(items)) {
-        const totalPrice = items?.reduce(
-          (acc: number, { product_id, quantity }: LineItemType) => {
-            const { regular_price } = products[product_id];
-            return acc + regular_price * quantity;
-          },
-          0
-        );
-        const $total = document.querySelector(".js-line-items-total");
-        $total.textContent = `${totalPrice}`;
-      }
+      const [shippingLine] = await cart.getShippingLines();
+      const total = await computeOrderTotal();
+      const $total = document.querySelector(".js-line-items-total");
+      $total.textContent = `${total}`;
+      const $subtotal = document.querySelector(".js-line-items-subtotal");
+      $subtotal.textContent = `${
+        total - parseInt(shippingLine?.total || "0", 10)
+      }`;
     });
   });
   // get shipping locations
@@ -303,7 +303,7 @@ import Layout from "../../layouts/Layout.astro";
   await fetchAndRenderShippingLocation($shippingLocation);
   const $subtotal = document.querySelector(".js-line-items-subtotal");
   const total = await computeOrderTotal();
-  const cart = await new CartStorage();
+  const cart = new CartStorage();
   const [shippingLine] = await cart.getShippingLines();
   $subtotal.textContent = `${total - parseInt(shippingLine?.total || "0")}`;
 </script>
