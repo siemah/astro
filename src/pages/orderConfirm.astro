@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Commande">
+  <main class="main-container js-main__container">
+    <!-- hero section -->
+    <div class="jumbotron jumbotron-fluid py-5 m-0 bg-skyblue">
+      <div class="container">
+        <div
+          class="d-flex flex-column align-items-center justify-content-center"
+        >
+          <h1>Merci!</h1>
+          <p>
+            Nous traitons actuellement votre commande. Si vous avez des
+            inquiétudes n'hésitez pas de nous contactez
+          </p>
+          <a
+            href={"/shop/1/"}
+            class="card__action btn bg-green color-white btn-block no-border rounded-0 w-auto px-5 py-3 text-uppercase"
+          >
+            Continuer vos achats
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
