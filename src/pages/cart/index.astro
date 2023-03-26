@@ -65,12 +65,10 @@ import Layout from "../../layouts/Layout.astro";
           <div
             class="card rounded-0 bg-grey pt-4 pb-4 p-4 overflow-hidden mt-5"
           >
-            <div class="card-item pt-3 pb-3 align-middle border-bottom-black">
-              <div class="p-1 mr-2">Total</div>
-              <div
-                class="card__highlight bg-white color-green p-1 pl-3 pr-3 rounded-02 bg-grey fs-20 font-weight-bold"
-              >
-                <span class="js-line-items-total">0</span>
+            <div class="d-flex justify-content-between">
+              <div class="p-1 mr-2">Sous total</div>
+              <div class="p-1 pl-3 pr-3 rounded-0">
+                <span class="js-line-items-subtotal">0</span>
                 <sup>DZD</sup>
               </div>
             </div>
@@ -120,6 +118,15 @@ import Layout from "../../layouts/Layout.astro";
                 <sup class="fs-12">DZD</sup>
               </div>
             </div>
+            <div class="card-item pt-3 pb-3 align-middle border-bottom-black">
+              <div class="p-1 mr-2">Total</div>
+              <div
+                class="card__highlight bg-white color-green p-1 pl-3 pr-3 rounded-02 bg-grey fs-20 font-weight-bold"
+              >
+                <span class="js-line-items-total">0</span>
+                <sup>DZD</sup>
+              </div>
+            </div>
             <div class="div pt-3 pb-3 d-flex">
               <a
                 class="btn bg-green btn-lg btn-block color-white no-border rounded-0 pt-2 pb-2 fs-16"
@@ -139,6 +146,7 @@ import Layout from "../../layouts/Layout.astro";
 <!-- end main content -->
 
 <script>
+  import { computeOrderTotal } from "../../helpers/cart";
   import { LineItemType } from "../../helpers/cart/types";
   import CartStorage from "../../helpers/storage";
   import { fetchAndRenderShippingLocation } from "../../helpers/ui/cart";
@@ -293,4 +301,9 @@ import Layout from "../../layouts/Layout.astro";
   // get shipping locations
   const $shippingLocation = document.querySelector(".js-shipping__location");
   await fetchAndRenderShippingLocation($shippingLocation);
+  const $subtotal = document.querySelector(".js-line-items-subtotal");
+  const total = await computeOrderTotal();
+  const cart = await new CartStorage();
+  const [shippingLine] = await cart.getShippingLines();
+  $subtotal.textContent = `${total - parseInt(shippingLine?.total || "0")}`;
 </script>
