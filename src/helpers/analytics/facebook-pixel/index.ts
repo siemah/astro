@@ -155,7 +155,7 @@ export async function initiateCheckout(data: MetaServerEventDataType["customData
  * @param product details of the product
  * @see https://developers.facebook.com/docs/meta-pixel/reference#standard-events
  */
-export async function purchase(price: number, content_ids: [], contents: Record<string, string>[], currency = "DZD", content_type = "product", metaConfig?: MetaConfigType, userData?: MetaServerEventDataType["userData"]) {
+export async function purchase(price: number, content_ids: string[], contents: Record<string, string>[], currency = "DZD", content_type = "product", metaConfig?: MetaConfigType, userData?: MetaServerEventDataType["userData"]) {
   if (typeof window !== "undefined") {
     try {
       const eventName = "Purchase";

@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Alert from "../../components/alert/index.astro";
 ---
 
 <Layout title="Commande">
@@ -37,10 +38,11 @@ import Layout from "../../layouts/Layout.astro";
     <!-- end of breadcrumb menu -->
 
     <!-- product list  -->
+    <Alert variant={"danger"} class="js-alert" />
     <form
-      action="/confirmation"
+      action="#"
       method="POST"
-      class="row pt-lg-5 pb-5 panier__product-list"
+      class="row pt-lg-5 pb-5 panier__product-list needs-validation js-order"
     >
       <div class="col-lg-8 pr-lg-2">
         <div>
@@ -54,6 +56,7 @@ import Layout from "../../layouts/Layout.astro";
                 class="form-control rounded-0"
                 id="prenome"
               />
+              <div class="invalid-feedback"></div>
             </div>
             <div class="form-group col-md-6">
               <label class="color-light-black" for="nom">Nom de famille*</label>
@@ -63,6 +66,7 @@ import Layout from "../../layouts/Layout.astro";
                 class="form-control rounded-0"
                 id="nom"
               />
+              <div class="invalid-feedback"></div>
             </div>
           </div>
           <div class="form-row">
@@ -76,6 +80,7 @@ import Layout from "../../layouts/Layout.astro";
                 class="form-control rounded-0"
                 id="phone"
               />
+              <div class="invalid-feedback"></div>
             </div>
             <div class="form-group col-md-6">
               <label class="color-light-black" for="email">Email</label>
@@ -85,6 +90,7 @@ import Layout from "../../layouts/Layout.astro";
                 class="form-control rounded-0"
                 id="email"
               />
+              <div class="invalid-feedback"></div>
             </div>
           </div>
           <div class="form-row">
@@ -96,6 +102,7 @@ import Layout from "../../layouts/Layout.astro";
                 class="form-control rounded-0"
                 id="address"
               />
+              <div class="invalid-feedback"></div>
             </div>
             <div class="form-group col-lg-6">
               <label for="state" class="form-label text-sm"> Wilaya*</label>
@@ -106,6 +113,7 @@ import Layout from "../../layouts/Layout.astro";
               >
                 <option value="" disabled="" selected>Wilaya</option>
               </select>
+              <div class="invalid-feedback"></div>
             </div>
           </div>
 
@@ -185,22 +193,184 @@ import Layout from "../../layouts/Layout.astro";
     </form>
   </div>
   <script>
+    import {
+      customEvent,
+      initiateCheckout,
+      purchase,
+    } from "../../helpers/analytics/facebook-pixel";
+    import { constructProductsIds } from "../../helpers/analytics/facebook-pixel/utils";
     import { computeOrderTotal } from "../../helpers/cart";
+    import { LineItemType } from "../../helpers/cart/types";
+    import { extractStoreKeyFromShippingUrl } from "../../helpers/data";
+    import { objectifyFormData } from "../../helpers/form";
+    import httpRequest from "../../helpers/http";
     import CartStorage from "../../helpers/storage";
+    import { scrollIntoView } from "../../helpers/ui";
     import { fetchAndRenderShippingLocation } from "../../helpers/ui/cart";
+    import { validateBillingDetails } from "../../helpers/validators/checkout";
 
     const $shippingLocation = document.querySelector(".js-shipping__location");
     await fetchAndRenderShippingLocation($shippingLocation);
     // show shipping total
     const cart = new CartStorage();
-    const [shippingLines] = await cart.getShippingLines();
+    const [shippingLine] = await cart.getShippingLines();
     const $shippingTotal = document.querySelector(".js-shipping__total");
-    $shippingTotal.textContent = `${shippingLines?.total || 0}`;
+    $shippingTotal.textContent = `${shippingLine?.total || 0}`;
     const $total = document.querySelector(".js-line-items-total");
     const total = await computeOrderTotal();
     $total.textContent = `${total}`;
     const $subtotal = document.querySelector(".js-line-items-subtotal");
-    const [shippingLine] = await cart.getShippingLines();
     $subtotal.textContent = `${total - parseInt(shippingLine?.total || "0")}`;
+    // submitting order form
+    const $form: HTMLFormElement = document.querySelector(".js-order");
+    const productItems = await cart.getAllItems();
+    const { content_ids, contents, numItems } = constructProductsIds(
+      productItems as LineItemType[]
+    );
+    const $store_shipping: HTMLMetaElement = document.querySelector(
+      "[name=store_shipping]"
+    );
+    const storeKey = extractStoreKeyFromShippingUrl($store_shipping.content);
+    const facebookPixelId =
+      // @ts-ignore
+      document.querySelector("[name='facebook-pixel-id']")?.content || null;
+    // meta initiatechecout event
+    if (numItems > 0 && !!facebookPixelId) {
+      const fbEventId = `event.id.ic-${Math.random() * 1000000}-${Date.now()}`;
+      window.fbq(
+        "track",
+        "InitiateCheckout",
+        {
+          contents: JSON.stringify(contents),
+          num_items: numItems || 1,
+          content_ids: content_ids,
+          content_category: "product",
+          value: total,
+          currency: "DZD",
+          timestamp: Date.now(),
+        },
+        { eventID: fbEventId }
+      );
+      await initiateCheckout(
+        {
+          num_items: numItems || 1,
+          content_ids: content_ids,
+          value: total,
+          currency: "DZD",
+          contents: contents,
+        },
+        {
+          pixelId: facebookPixelId,
+          sourceUrl: window.location.href,
+          storeKey,
+          eventID: fbEventId,
+        }
+      );
+    }
+
+    $form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      !!facebookPixelId &&
+        customEvent("StartPurchase", {
+          timestamp: Date.now(),
+        });
+      const { method } = $form;
+      const formData = new FormData($form);
+      const { billing } = objectifyFormData(formData);
+      const errors = validateBillingDetails(billing as Record<string, string>);
+
+      if (errors !== false) {
+        const $errorsElements = document.querySelectorAll(".invalid-feedback");
+        $errorsElements.forEach(($element) => {
+          $element.previousElementSibling.classList.remove("is-invalid");
+          $element.previousElementSibling.classList.add("is-valid");
+        });
+        Object.entries(errors).forEach(([key, errorMessage]) => {
+          const $input = document.querySelector(`[name="billing[${key}]"]`);
+          $input.classList.remove("is-valid");
+          $input.classList.add("is-invalid");
+          $input.nextElementSibling.textContent = errorMessage;
+        });
+        return;
+      }
+
+      const cart = new CartStorage();
+      const lineItems = await cart.getAllItems();
+      const shippingLines = await cart.getShippingLines();
+      delete shippingLines?.[0]?.id;
+      const order = {
+        line_items: lineItems,
+        billing,
+        shipping_lines: shippingLines,
+      };
+      const $store_checkout_url: HTMLMetaElement = document.querySelector(
+        "[name=store_checkout_url]"
+      );
+      const action = $store_checkout_url.content;
+      const response = await httpRequest({
+        url: action,
+        requestConfig: {
+          method,
+          body: JSON.stringify(order),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      });
+      let fbpOptions;
+
+      if (response?.code === "created") {
+        const cart = new CartStorage();
+        cart.clearshoppingCart();
+
+        // send standard events 2 meta pixel
+        if (!!facebookPixelId) {
+          let {
+            first_name: fn,
+            last_name: ln,
+            phone: ph,
+            email: em,
+            state: st,
+          } = billing as Record<string, string>;
+          fbpOptions = {
+            fn,
+            ln,
+            ph,
+            st,
+            country: "dz",
+          };
+          fbpOptions = !!em ? { ...fbpOptions, em } : fbpOptions;
+          const total = await computeOrderTotal();
+          await purchase(
+            total,
+            content_ids,
+            contents,
+            "DZD",
+            "product",
+            {
+              pixelId: facebookPixelId,
+              sourceUrl: window.location.href,
+              storeKey,
+              eventID: `event.id.p-${response.data.id}`,
+            },
+            fbpOptions
+          );
+          customEvent("EndOfPurchase", {
+            timestamp: `${Date.now()}`,
+          });
+        }
+        window.location.replace("/orderConfirm");
+      } else {
+        if (typeof window !== "undefined" && !response.errors?.global) {
+          const errorElement: HTMLElement = document.querySelector(".js-alert");
+          errorElement.textContent = response.errors?.global;
+          scrollIntoView(errorElement, -70);
+        }
+        !!facebookPixelId &&
+          customEvent("ServerErrorInPurchase", {
+            contents: response.errors,
+          });
+      }
+    });
   </script>
 </Layout>
