@@ -361,10 +361,12 @@ import Alert from "../../components/alert/index.astro";
         }
         window.location.replace("/orderConfirm");
       } else {
-        if (typeof window !== "undefined" && !response.errors?.global) {
-          const errorElement: HTMLElement = document.querySelector(".js-alert");
-          errorElement.textContent = response.errors?.global;
-          scrollIntoView(errorElement, -70);
+        if (typeof window !== "undefined" && !!response.errors?.global) {
+          const $errorElement: HTMLElement =
+            document.querySelector(".js-alert");
+          $errorElement.textContent = response.errors?.global;
+          $errorElement.classList.remove("d-none");
+          scrollIntoView($errorElement, -70);
         }
         !!facebookPixelId &&
           customEvent("ServerErrorInPurchase", {
