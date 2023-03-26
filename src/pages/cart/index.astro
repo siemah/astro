@@ -249,55 +249,55 @@ import Layout from "../../layouts/Layout.astro";
     const $cartBody = document.querySelector(".js-cart-details");
     $lineItemsTotal.textContent = `${lineItemsTotal}`;
     $cartBody.innerHTML = renderUI;
+    // remove items
+    const $removeBtns = document.querySelectorAll(".js-cart__remove-item");
+    $removeBtns.forEach(($btn) => {
+      $btn.addEventListener("click", async () => {
+        // @ts-ignore
+        const itemIndex = $btn.dataset?.["item"];
+        const cart = new CartStorage();
+        await cart.removeItemByIndex(Number(itemIndex));
+        await renderItems();
+        const [shippingLine] = await cart.getShippingLines();
+        const $subtotal = document.querySelector(".js-line-items-subtotal");
+        const total = await computeOrderTotal();
+        $subtotal.textContent = `${
+          total - parseInt(shippingLine?.total || "0", 10)
+        }`;
+      });
+    });
+    // set item quantity
+    const $btnsQtyCtrl = document.querySelectorAll(".js-crtl__qty");
+    $btnsQtyCtrl.forEach(($btn) => {
+      $btn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        // const $target = e.target;
+        const _operation = this.dataset.operation;
+        const _index = this.dataset.item;
+        const $parent = this.parentNode;
+        const $qtyInput =
+          _operation === "-"
+            ? $parent.nextElementSibling
+            : $parent.previousElementSibling;
+
+        let _sum = parseInt($qtyInput.value, 10);
+        _sum = _operation === "-" ? _sum - 1 : _sum + 1;
+
+        $qtyInput.value = _sum < 1 ? 1 : _sum;
+        const cart = new CartStorage();
+        await cart.updateItemQuantityByIndex(_index, _sum);
+        const [shippingLine] = await cart.getShippingLines();
+        const total = await computeOrderTotal();
+        const $total = document.querySelector(".js-line-items-total");
+        $total.textContent = `${total}`;
+        const $subtotal = document.querySelector(".js-line-items-subtotal");
+        $subtotal.textContent = `${
+          total - parseInt(shippingLine?.total || "0", 10)
+        }`;
+      });
+    });
   };
   await renderItems();
-  // remove items
-  const $removeBtns = document.querySelectorAll(".js-cart__remove-item");
-  $removeBtns.forEach(($btn) => {
-    $btn.addEventListener("click", async () => {
-      // @ts-ignore
-      const itemIndex = $btn.dataset?.["item"];
-      const cart = new CartStorage();
-      await cart.removeItemByIndex(Number(itemIndex));
-      await renderItems();
-      const [shippingLine] = await cart.getShippingLines();
-      const $subtotal = document.querySelector(".js-line-items-subtotal");
-      const total = await computeOrderTotal();
-      $subtotal.textContent = `${
-        total - parseInt(shippingLine?.total || "0", 10)
-      }`;
-    });
-  });
-  // set item quantity
-  const $btnsQtyCtrl = document.querySelectorAll(".js-crtl__qty");
-  $btnsQtyCtrl.forEach(($btn) => {
-    $btn.addEventListener("click", async function (e) {
-      e.preventDefault();
-      // const $target = e.target;
-      const _operation = this.dataset.operation;
-      const _index = this.dataset.item;
-      const $parent = this.parentNode;
-      const $qtyInput =
-        _operation === "-"
-          ? $parent.nextElementSibling
-          : $parent.previousElementSibling;
-
-      let _sum = parseInt($qtyInput.value, 10);
-      _sum = _operation === "-" ? _sum - 1 : _sum + 1;
-
-      $qtyInput.value = _sum < 1 ? 1 : _sum;
-      const cart = new CartStorage();
-      await cart.updateItemQuantityByIndex(_index, _sum);
-      const [shippingLine] = await cart.getShippingLines();
-      const total = await computeOrderTotal();
-      const $total = document.querySelector(".js-line-items-total");
-      $total.textContent = `${total}`;
-      const $subtotal = document.querySelector(".js-line-items-subtotal");
-      $subtotal.textContent = `${
-        total - parseInt(shippingLine?.total || "0", 10)
-      }`;
-    });
-  });
   // get shipping locations
   const $shippingLocation = document.querySelector(".js-shipping__location");
   await fetchAndRenderShippingLocation($shippingLocation);
