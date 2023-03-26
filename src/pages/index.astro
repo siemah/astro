@@ -27,20 +27,24 @@ const trendingProducts = await getTrendingProducts();
 			class="jumbotron jumbotron-fluid p-0 m-0 p-20px carousel-image bg-skyblue overflow-hidden d-flex position-relative"
 			style={`min-height: 350px;`}
 		>
-			<Picture
-				alt={pageTitle}
-				src={pageImage}
-				sources={[
-					{
-						srcset: getImageLink(pageImage),
-					},
-				]}
-				containerClass="position-absolute w-100 h-100"
-				containerStyle="margin-left: -20px; margin-top: -20px;"
-				class="w-100 h-100"
-				style="object-fit: cover;object-position: center;"
-				loading={"eager"}
-			/>
+			{
+				!!pageImage && (
+					<Picture
+						alt={pageTitle}
+						src={pageImage}
+						sources={[
+							{
+								srcset: getImageLink(pageImage),
+							},
+						]}
+						containerClass="position-absolute w-100 h-100"
+						containerStyle="margin-left: -20px; margin-top: -20px;"
+						class="w-100 h-100"
+						style="object-fit: cover;object-position: center;"
+						loading={"eager"}
+					/>
+				)
+			}
 			<div class="container position-relative">
 				<div
 					class="h-100 d-flex flex-column justify-content-center align-items-center"
