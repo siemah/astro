@@ -9,6 +9,9 @@ import getAllProducts from "../all";
 export default async function getTrendingProducts(search: Record<string, string> = {}) {
   const allProducts = await getAllProducts();
   const include = allProducts?.map(product => product?.id);
+
+  if (include.length === 0) return [];
+
   const products = await getProducts({
     orderby: "popularity",
     per_page: "8",
