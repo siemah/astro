@@ -25,7 +25,7 @@ export async function fetchAndRenderShippingLocation($shippingLocation: Element)
     $shippingLocation.innerHTML = shippingLocationUI;
     const cart = new CartStorage();
     const [shippingLine] = await cart.getShippingLines();
-    document.querySelector(".js-shipping__total").textContent = `${shippingLine.total || 0}`;
+    document.querySelector(".js-shipping__total").textContent = `${shippingLine?.total || 0}`;
     // set a default value for shipping location
     if (!!shippingLine && !!shippingLine?.id) {
       // @ts-ignore

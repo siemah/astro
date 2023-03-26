@@ -34,7 +34,7 @@ export async function computeOrderTotal() {
   const [shippingItem] = await cart.getShippingLines();
   const items = await cart.getAllItems();
   const products = await cart.getItemsDetails();
-  let total = parseInt(shippingItem.total, 10) || 0;
+  let total = parseInt(shippingItem?.total || "0", 10);
 
   if (Array.isArray(items)) {
     items?.forEach(item => {
