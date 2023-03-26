@@ -194,7 +194,7 @@ export default class CartStorage {
    * Retrieve shipping details
    * @returns list of shipping items selected by customer
    */
-  getShippingLines() {
+  getShippingLines(): Promise<ShippingLineType[]> {
     return new Promise(function (resolve) {
       let cart: string | [] | null = localStorage.getItem(CART_SHIPPING_LINES);
 
@@ -204,7 +204,7 @@ export default class CartStorage {
         cart = [];
       }
 
-      resolve(cart);
+      resolve(cart as ShippingLineType[]);
     });
   }
 

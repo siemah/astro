@@ -140,17 +140,16 @@ import Layout from "../../layouts/Layout.astro";
 
 <script>
   import { LineItemType } from "../../helpers/cart/types";
-  import httpRequest from "../../helpers/http";
   import CartStorage from "../../helpers/storage";
+  import { fetchAndRenderShippingLocation } from "../../helpers/ui/cart";
 
   const renderItems = async () => {
     const cart = new CartStorage();
     let renderUI = "";
     let lineItemsTotal = 0;
-    const [lineItems = [], products = {}, shippingLines] = await Promise.all([
+    const [lineItems = [], products = {}] = await Promise.all([
       cart.getAllItems(),
       cart.getItemsDetails(),
-      cart.getShippingLines(),
     ]);
     // @ts-ignore
     lineItems?.map((lineItem, index) => {
@@ -292,56 +291,6 @@ import Layout from "../../layouts/Layout.astro";
     });
   });
   // get shipping locations
-  const store_shipping = document
-    .querySelector("[name='store_shipping']")
-    ?.getAttribute("content");
-  const response = await httpRequest({
-    url: store_shipping,
-  });
-  const shippingLocations = response?.data || [];
   const $shippingLocation = document.querySelector(".js-shipping__location");
-
-  if (response.code === "success") {
-    let shippingLocationUI =
-      "<option disabled='' value='' selected>Wilaya</option>";
-    shippingLocations.forEach((item: Record<string, any>) => {
-      shippingLocationUI += `<option value="${item?.location?.code}">${item?.location?.name}</option>`;
-    });
-    $shippingLocation.innerHTML = shippingLocationUI;
-  }
-
-  $shippingLocation.addEventListener("change", async (event) => {
-    // @ts-ignore
-    const { value } = event.target;
-    const selectedShippind = shippingLocations.find(
-      ({ location }) => location.code === value
-    );
-
-    if (selectedShippind !== undefined) {
-      const $shippingMode = document.querySelector(
-        "[name=shipping-mode]:checked"
-      );
-      // @ts-ignore
-      const selectedShippingMode = $shippingMode?.value || "door";
-      const shippingTotal =
-        selectedShippingMode === "door"
-          ? selectedShippind?.cost
-          : selectedShippind?.["stop-desk-cost"] || selectedShippind?.cost || 0;
-      const cart = new CartStorage();
-      const shippingLine = {
-        method_id: "flat_rate",
-        id: selectedShippind?.zzenz_id,
-        method_title: selectedShippind?.name,
-        total: shippingTotal,
-      };
-      await cart.updateShippingLine(shippingLine);
-      const $shippingTotal = document.querySelector(".js-shipping__total");
-      $shippingTotal.textContent = shippingTotal;
-      const $total = document.querySelector(".js-line-items-total");
-      $total.textContent = `${
-        parseInt($total.textContent || "0", 10) +
-        parseInt(shippingTotal || "0", 10)
-      }`;
-    }
-  });
+  await fetchAndRenderShippingLocation($shippingLocation);
 </script>

@@ -47,59 +47,74 @@ import Layout from "../../layouts/Layout.astro";
           <h1 class="fs-16 mb-3 color-black">Informations de facturation</h1>
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label class="color-light-black" for="prenome">Prenom</label>
-              <input type="text" class="form-control rounded-0" id="prenome" />
+              <label class="color-light-black" for="prenome">Prénom*</label>
+              <input
+                name="billing[first_name]"
+                type="text"
+                class="form-control rounded-0"
+                id="prenome"
+              />
             </div>
             <div class="form-group col-md-6">
-              <label class="color-light-black" for="nom">Nom</label>
-              <input type="text" class="form-control rounded-0" id="nom" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="color-light-black" for="prenome2">Prenom</label>
-            <input type="text" class="form-control rounded-0" id="prenome2" />
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label class="color-light-black" for="Commune">Commune</label>
-              <input type="text" class="form-control rounded-0" id="Commune" />
-            </div>
-            <div class="form-group col-md-6">
-              <label class="color-light-black" for="wilaya">Wilaya</label>
-              <div class="form-control d-block rounded-0">
-                <select
-                  id="wilaya"
-                  class="no-border bg-white d-block width-100"
-                >
-                  <option selected>Choix 1</option>
-                  <option>Choix 2</option>
-                </select>
-              </div>
+              <label class="color-light-black" for="nom">Nom de famille*</label>
+              <input
+                name="billing[last_name]"
+                type="text"
+                class="form-control rounded-0"
+                id="nom"
+              />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label class="color-light-black" for="Mobile">Mobile</label>
-              <input type="tel" class="form-control rounded-0" id="Mobile" />
+              <label class="color-light-black" for="phone"
+                >Numéro de téléphone*</label
+              >
+              <input
+                name="billing[phone]"
+                type="tel"
+                class="form-control rounded-0"
+                id="phone"
+              />
             </div>
             <div class="form-group col-md-6">
-              <label class="color-light-black" for="Fix">Fix</label>
-              <input type="tel" class="form-control rounded-0" id="Fix" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-12">
               <label class="color-light-black" for="email">Email</label>
-              <input type="email" class="form-control rounded-0" id="email" />
+              <input
+                name="billing[email]"
+                type="email"
+                class="form-control rounded-0"
+                id="email"
+              />
             </div>
           </div>
-          <div class="form-group">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="gridCheck" />
-              <label class="form-check-label" for="gridCheck">
-                Enregister mes informations
-              </label>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="color-light-black" for="address">Adresse*</label>
+              <input
+                name="billing[address_1]"
+                type="text"
+                class="form-control rounded-0"
+                id="address"
+              />
             </div>
+            <div class="form-group col-lg-6">
+              <label for="state" class="form-label text-sm"> Wilaya*</label>
+              <select
+                name="billing[state]"
+                id="state"
+                class="form-control rounded-0 js-shipping__location"
+              >
+                <option value="" disabled="" selected>Wilaya</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="div pt-3 pb-3">
+            <button
+              class="btn bg-green color-white no-border rounded-0 pt-2 pb-2"
+            >
+              Passer la commande
+            </button>
           </div>
         </div>
       </div>
@@ -111,40 +126,68 @@ import Layout from "../../layouts/Layout.astro";
             <div
               class="card__highlight bg-white color-green p-1 pl-3 pr-3 rounded-0 bg-grey fs-20 font-weight-bold"
             >
-              150 000,00<sup>DZD</sup>
+              <span class="js-line-items-total">0</span>
+              <sup>DZD</sup>
             </div>
-            <div class="card-item pt-3 pb-3 align-middle border-bottom-grey">
-              <div class="p-1 mr-2">TVA 19%</div>
-            </div>
-            <div class="d-flex card-item pt-3 pb-3 align-middle">
-              <div class="p-1 mr-2">Livraison</div>
-              <div class="card__highlight p-1 pl-3 pr-3 rounded-0 bg-grey">
-                600<sup class="fs-12">DZD</sup>
+            <div
+              class="d-flex card-item pt-3 pb-3 align-middle justify-content-between"
+            >
+              <div class="p-1 mr-2">
+                <div class="mb-3">Livraison</div>
+                <div class="d-flex flex-column mb-3">
+                  <label
+                    for="door"
+                    class="d-flex align-items-center form-label text-sm mb-1"
+                    ><input
+                      type="radio"
+                      name="shipping-mode"
+                      id="door"
+                      class="ml-0 mr-2"
+                      value="door"
+                      checked=""
+                    />
+                    <span>À domicile</span>
+                  </label>
+                  <label
+                    for="stop-desk"
+                    class="d-flex align-items-center form-label text-sm mb-0"
+                  >
+                    <input
+                      type="radio"
+                      name="shipping-mode"
+                      id="stop-desk"
+                      class="ml-0 mr-2"
+                      value="stop-desk"
+                    />
+                    <span>Stop desk</span>
+                  </label>
+                </div>
               </div>
-            </div>
-
-            <div class="div pt-3 pb-3">
-              <button
-                class="btn bg-green color-white btn-block no-border rounded-0 pt-1 pb-1"
-                >Button</button
+              <div
+                class="card__highlight p-1 pl-3 pr-3 rounded-02 bg-grey text-right"
               >
+                <span class="js-shipping__total">0</span>
+                <sup class="fs-12">DZD</sup>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- end of product list  -->
-
-      <div class="condition-block bg-grey mb-5 p-3">
-        <h3 class="display-5 color-black no-underline pr-3">
-          Condition general
-        </h3>
-        <p class="color-light-black pt-4">
-          Idque suavitate at vix. Est no soleat aliquip temporibus. Id erat
-          accusamus principes vis. Et nec latine meliore antiopam, ne sed
-          minimum epicurei accommodare. Vero molestie lobortis mei cu, nam movet
-          saperet tacimates te.
-        </p>
-      </div>
     </form>
   </div>
+  <script>
+    import { computeOrderTotal } from "../../helpers/cart";
+    import CartStorage from "../../helpers/storage";
+    import { fetchAndRenderShippingLocation } from "../../helpers/ui/cart";
+
+    const $shippingLocation = document.querySelector(".js-shipping__location");
+    await fetchAndRenderShippingLocation($shippingLocation);
+    // show shipping total
+    const cart = new CartStorage();
+    const [shippingLines] = await cart.getShippingLines();
+    const $shippingTotal = document.querySelector(".js-shipping__total");
+    $shippingTotal.textContent = `${shippingLines?.total || 0}`;
+    const $total = document.querySelector(".js-line-items-total");
+    $total.textContent = `${await computeOrderTotal()}`;
+  </script>
 </Layout>

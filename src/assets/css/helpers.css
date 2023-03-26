@@ -7,7 +7,10 @@
 :root {
   --main-color: #8BC540;
 }
-
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgb(139, 197, 64, .25);
+  border-color: #8BC540;
+}
 .gap-3 {
   gap: 1rem !important;
 }

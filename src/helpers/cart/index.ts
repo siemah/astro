@@ -1,3 +1,4 @@
+import CartStorage from "../storage";
 import { ConstructCartDataByProductOptionsType, LineItemType, MetaDataType } from "./types";
 
 /**
@@ -21,4 +22,26 @@ export function constructCartDataByProduct<T extends ConstructCartDataByProductO
     ...rest,
     meta_data
   };
+}
+
+/**
+ * Compute order total
+ * 
+ * @returns total of the items in the cart
+ */
+export async function computeOrderTotal() {
+  const cart = new CartStorage();
+  const [shippingItem] = await cart.getShippingLines();
+  const items = await cart.getAllItems();
+  const products = await cart.getItemsDetails();
+  let total = parseInt(shippingItem.total, 10) || 0;
+
+  if (Array.isArray(items)) {
+    items?.forEach(item => {
+      const productPrice = parseInt(products[item.product_id].regular_price, 10);
+      total += parseInt(item.quantity, 10) * productPrice;
+    });
+  }
+
+  return total;
 }
