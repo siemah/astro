@@ -28,7 +28,7 @@ import Layout from "../../layouts/Layout.astro";
             <a class="color-grey" href="/">Home</a>
           </li>
           <li class="breadcrumb-item color-grey" aria-current="page">
-            <a class="color-grey" href="/cart/">Mon Panier</a>
+            <a class="color-grey" href="/cart/">Panier</a>
           </li>
         </ol>
       </nav>
@@ -192,6 +192,7 @@ import Layout from "../../layouts/Layout.astro";
                   class="input-group-text bg-transparent no-border js-crtl__qty"
                   data-operation="-"
                   data-item="${index}"
+                  data-itemid="${product.id}"
                 >
                   -
                 </button>
@@ -208,6 +209,7 @@ import Layout from "../../layouts/Layout.astro";
                   class="input-group-text bg-transparent no-border js-crtl__qty"
                   data-operation="+"
                   data-item="${index}"
+                  data-itemid="${product.id}"
                 >
                   +
                 </button>
@@ -216,7 +218,9 @@ import Layout from "../../layouts/Layout.astro";
           </div>
         </td>
         <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
-          ${lineItem?.quantity * product?.regular_price}
+          <span class="js-item-total">${
+            lineItem?.quantity * product?.regular_price
+          }</span>
           <sup>DZD</sup>
         </td>
         <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
@@ -271,9 +275,9 @@ import Layout from "../../layouts/Layout.astro";
     $btnsQtyCtrl.forEach(($btn) => {
       $btn.addEventListener("click", async function (e) {
         e.preventDefault();
-        // const $target = e.target;
         const _operation = this.dataset.operation;
         const _index = this.dataset.item;
+        const _itemId = this.dataset.itemid;
         const $parent = this.parentNode;
         const $qtyInput =
           _operation === "-"
@@ -282,11 +286,14 @@ import Layout from "../../layouts/Layout.astro";
 
         let _sum = parseInt($qtyInput.value, 10);
         _sum = _operation === "-" ? _sum - 1 : _sum + 1;
-
-        $qtyInput.value = _sum < 1 ? 1 : _sum;
+        _sum = _sum < 1 ? 1 : _sum;
+        $qtyInput.value = _sum;
         const cart = new CartStorage();
         await cart.updateItemQuantityByIndex(_index, _sum);
         const [shippingLine] = await cart.getShippingLines();
+        const productsDetails = await cart.getItemsDetails();
+        const itemPrice = productsDetails?.[_itemId]?.regular_price;
+        const itemTotal = _sum * itemPrice;
         const total = await computeOrderTotal();
         const $total = document.querySelector(".js-line-items-total");
         $total.textContent = `${total}`;
@@ -294,6 +301,9 @@ import Layout from "../../layouts/Layout.astro";
         $subtotal.textContent = `${
           total - parseInt(shippingLine?.total || "0", 10)
         }`;
+        const $itemTotal: HTMLElement =
+          document.querySelector(".js-item-total");
+        $itemTotal.textContent = `${itemTotal}`;
       });
     });
   };
