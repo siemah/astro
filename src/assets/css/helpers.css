@@ -414,6 +414,10 @@
   left: 12px;
 }
 
+a {
+  color: var(--main-color);
+}
+
 /* add space between icons of panier and favoris */
 header>div.container>nav.container.navbar.navbar-expand-lg.navbar-light.pr-0.pl-0>div>ul>li:nth-child(1)>a {
   margin-right: 30px;
