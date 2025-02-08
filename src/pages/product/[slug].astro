@@ -28,9 +28,9 @@ const productForScript = {
   thumbnail: product?.images?.[0],
 };
 const categories = product?.categories;
-const similarProducts = await getSimilarProductsByCategories(
-  categories?.[0].id,
-);
+const similarProducts = !!categories?.[0]?.id
+  ? await getSimilarProductsByCategories(categories?.[0]?.id)
+  : [];
 
 export async function getStaticPaths() {
   const products = await getAllProducts();
@@ -357,7 +357,7 @@ export async function getStaticPaths() {
       <div class="shop__product-list row mb-60px">
         <!-- product card item -->
         {
-          similarProducts.map((currentProduct) => {
+          similarProducts?.map((currentProduct) => {
             if (product?.slug !== currentProduct?.slug) {
               return (
                 <ProductCard
