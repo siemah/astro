@@ -14,7 +14,7 @@ export function getImageLink(src: string, imageConfig?: GetImageLinkConfigTypes)
   const format = imageConfig?.formats ?? "webp"
   return (
     import.meta.env.NODE_ENV == "production"
-      ? `https://images.weserv.nl/?url=${src}&output=${format}&q=85`
+      ? src//`https://images.weserv.nl/?url=${src}&output=${format}&q=85`
       : src
   );
 }
@@ -49,7 +49,7 @@ export function generateProductImageSet(url: string, sizes: string[], dimensions
   let srcSet = [];
   sizes.forEach((size, index) => {
     const { height, width } = dimensions[index];
-    const imageSrc = `https://images.weserv.nl/?url=${url}&output=webp&h=${height || ""}&w=${width || ""}&we ${size}w`;
+    const imageSrc = url;//`https://images.weserv.nl/?url=${url}&output=webp&h=${height || ""}&w=${width || ""}&we ${size}w`;
     srcSet.push(imageSrc);
   });
   // add a default url with webp format
