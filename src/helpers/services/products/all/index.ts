@@ -11,7 +11,7 @@ interface ParamsType {
  * @returns list of store products
  */
 export default async function getAllProducts() {
-  const max_page = 10;// means 10 * per_page = 240 products
+  const max_page = 5;// means 5 * per_page = 120 products
   const products: Record<string, any>[] = [];
   const per_page = 24;
   let isNotDone = true;
@@ -36,6 +36,7 @@ export default async function getAllProducts() {
 }
 
 export async function getProductsOfCategory(categoryId: number | string) {
+  const max_page = 4;// means 5 * per_page = 120 products
   const products = [];
   const per_page = 24;
   let isNotDone = true;
@@ -52,7 +53,7 @@ export async function getProductsOfCategory(categoryId: number | string) {
     });
     products.push(...productsPerPage as []);
 
-    if (productsPerPage?.length === 0 || productsPerPage?.length < per_page) {
+    if (productsPerPage?.length === 0 || productsPerPage?.length < per_page || max_page <= page) {
       isNotDone = false;
     }
   }
