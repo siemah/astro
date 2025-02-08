@@ -10,8 +10,7 @@ export default async function getProducts(searchParams?: string | string[][] | R
   const search = new URLSearchParams(searchParams);
   const endpoint = !!searchParams
     ? `${globalLinks.apiProducts}?${search}`
-    : globalLinks.products;
-
+    : globalLinks.apiProducts;
   const products = await httpRequest({
     url: endpoint
   });

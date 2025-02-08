@@ -11,7 +11,10 @@ export default async function httpRequest<Response = any>(config: RequestConfigT
   let response;
 
   try {
-    const request = await fetch(config.url, config.requestConfig);
+    const request = await fetch(config.url, {
+      cache: "force-cache",
+      ...(config.requestConfig || {})
+    });
     response = await request.json();
   } catch (error) {
     const customErrorResponse = {

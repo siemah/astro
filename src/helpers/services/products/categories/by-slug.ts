@@ -12,6 +12,7 @@ export default async function getCategoryBySlug(slug: string): Promise<Record<st
     consumer_key: import.meta.env.WC_API_DEPLOY_CONSUMER_KEY,
     consumer_secret: import.meta.env.WC_API_DEPLOY_CONSUMER_SECRET,
   });
+  console.log(`[Fetching category ${slug} products]>>>>>>`)
   const [category] = await httpRequest({
     url: `${globalLinks.apiCategories}?${search}`
   });

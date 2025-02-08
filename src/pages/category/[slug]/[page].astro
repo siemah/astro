@@ -2,7 +2,7 @@
 import ProductCard from "../../../components/product-card/index.astro";
 import Layout from "../../../layouts/Layout.astro";
 import getCategories from "../../../helpers/services/products/categories";
-import getAllProducts from "../../../helpers/services/products/all";
+import { getProductsOfCategory } from "../../../helpers/services/products/all";
 import getCategoryBySlug from "../../../helpers/services/products/categories/by-slug";
 
 const { slug } = Astro.params;
@@ -10,21 +10,29 @@ const category = await getCategoryBySlug(slug);
 
 export async function getStaticPaths({ paginate }) {
   const categories = await getCategories();
-  const paths = categories?.map(async (category) => {
+  console.log("[<<<<<<<<gSP>>>>>>>>]", categories.length);
+  const paths: any[] = [];
+  for (const category of categories) {
     const slug = decodeURIComponent(category.slug);
     const productPerPage = 24;
-    const products = await getAllProducts();
-    const productsByCategory = products.filter((product) => {
-      return product?.category_ids?.includes(category?.term_id);
-    });
+    const productsByCategory = await getProductsOfCategory(category.id);
+    console.log(
+      `<<<<<<<<<<<<[${category.name} ${category.id}]>>>>>>>>>>>>`,
+      productsByCategory?.length,
+    );
+    // const productsByCategory = products.filter((product) => {
+    //   return product?.category_ids?.includes(category?.term_id);
+    // });
 
-    return paginate(productsByCategory, {
-      params: { slug },
-      pageSize: productPerPage,
-    });
-  });
+    paths.push(
+      paginate(productsByCategory, {
+        params: { slug },
+        pageSize: productPerPage,
+      }),
+    );
+  }
 
-  return await Promise.all(paths);
+  return paths.flat();
 }
 const { page } = Astro.props;
 ---

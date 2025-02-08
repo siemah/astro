@@ -5,11 +5,13 @@ import sitemap from "@astrojs/sitemap";
 import robotsTxt from "astro-robots-txt";
 
 import partytown from "@astrojs/partytown";
+import tailwindcss from "@tailwindcss/vite";
 const site = `https://${process.env.DOMAIN}`;
 // https://astro.build/config
 export default defineConfig({
   output: "static",
   site,
+
   integrations: [
     image({
       serviceEntryPoint: "@astrojs/image/sharp"
@@ -33,5 +35,8 @@ export default defineConfig({
         forward: ["dataLayer.push"]
       },
     })
-  ]
+  ],
+  vite: {
+    plugins: [tailwindcss()]
+  }
 });

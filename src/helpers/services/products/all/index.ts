@@ -11,7 +11,7 @@ interface ParamsType {
  * @returns list of store products
  */
 export default async function getAllProducts() {
-  const products = [];
+  const products: Record<string, any>[] = [];
   const per_page = 24;
   let isNotDone = true;
 
@@ -20,11 +20,36 @@ export default async function getAllProducts() {
       per_page: `${per_page}`,
       page: `${page}`
     });
-    const endpoint = `${globalLinks.products}?${search}`
+    const endpoint = `${globalLinks.products}&${search}`
     const productsPerPage = await httpRequest({
       url: endpoint
     });
-    products.push(...productsPerPage);
+    products.push(...productsPerPage as []);
+
+    if (productsPerPage?.length === 0 || productsPerPage?.length < per_page) {
+      isNotDone = false;
+    }
+  }
+
+  return products;
+}
+
+export async function getProductsOfCategory(categoryId: number | string) {
+  const products = [];
+  const per_page = 24;
+  let isNotDone = true;
+
+  for (let page = 1; isNotDone; page++) {
+    const search = new URLSearchParams({
+      per_page: `${per_page}`,
+      page: `${page}`,
+      category: `${categoryId}`
+    });
+    const endpoint = `${globalLinks.products}&${search}`
+    const productsPerPage = await httpRequest({
+      url: endpoint
+    });
+    products.push(...productsPerPage as []);
 
     if (productsPerPage?.length === 0 || productsPerPage?.length < per_page) {
       isNotDone = false;

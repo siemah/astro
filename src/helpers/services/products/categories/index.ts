@@ -7,8 +7,12 @@ import httpRequest from "../../../http";
  * @returns list of store products
  */
 export default async function getCategories(): Promise<Record<string, string>[]> {
-  const { data: categories = [] } = await httpRequest({
-    url: globalLinks.productsCategories
+  const params = new URLSearchParams({
+    consumer_key: globalLinks.consumerKey,
+    consumer_secret: globalLinks.consumerSecret
+  });
+  const categories = await httpRequest({
+    url: `${globalLinks.productsCategories}?${params}`
   });
 
   return categories;

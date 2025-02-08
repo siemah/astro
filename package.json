@@ -15,11 +15,13 @@
     "@astrojs/sitemap": "^1.2.1",
     "@astrolib/analytics": "^0.3.0",
     "@fontsource/poppins": "^4.5.10",
-    "astro": "^2.0.0",
+    "@tailwindcss/vite": "^4.0.4",
+    "astro": "^5.2.5",
     "astro-purgecss": "^2.0.1",
     "astro-robots-txt": "^0.4.0",
     "astro-seo": "^0.7.1",
     "bootstrap": "4.5.0",
-    "sharp": "^0.31.3"
+    "sharp": "^0.31.3",
+    "tailwindcss": "^4.0.4"
   }
 }

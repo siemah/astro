@@ -3,8 +3,21 @@ import { getStoreDetails } from "../helpers/services/store/details";
 import Layout from "../layouts/Layout.astro";
 
 const storeDetails = await getStoreDetails();
-const { store_social_media, store_ui } = storeDetails?.store_primary_settings;
-const pageDescription = store_ui?.store_description || "";
+const store_social_media = {
+  store_twitter: storeDetails?.store_social_media?.store_twitter ?? "",
+  store_facebook: storeDetails?.store_social_media?.store_facebook ?? "",
+  store_instagram: storeDetails?.store_social_media?.store_instagram ?? "",
+  store_snapchat: storeDetails?.store_social_media?.store_snapchat ?? "",
+  store_tiktok: storeDetails?.store_social_media?.store_tiktok ?? "",
+  store_linkedin: storeDetails?.store_social_media?.store_linkedin ?? "",
+  store_youtube: storeDetails?.store_social_media?.store_youtube ?? "",
+};
+const store_ui = {
+  store_phone: "123456789",
+  store_contact_email: "webmaster@zzenz.com",
+  store_address: "1234 rue de la rue, 12345 Paris",
+};
+const pageDescription = "";
 ---
 
 <Layout title={"Contact"} description={pageDescription}>

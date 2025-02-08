@@ -9,7 +9,7 @@ import httpRequest from "../../../http";
  */
 export default async function getNewArrivals(per_page = 3) {
   const response = await httpRequest({
-    url: `${globalLinks.products}?per_page=${per_page}&order=desc&orderby=date`
+    url: `${globalLinks.products}?per_page=${per_page}&order=desc&orderby=date&consumer_key=${globalLinks.consumerKey}&consumer_secret=${globalLinks.consumerSecret}`,
   });
 
   return response || [];

@@ -12,6 +12,7 @@ import getProducts from "../../helpers/services/products";
 import { stripHTML } from "../../helpers/data";
 import getSimilarProductsByCategories from "../../helpers/services/products/similar";
 import "../../assets/css/ql.css";
+import getAllProducts from "../../helpers/services/products/all";
 
 const { slug } = Astro.params;
 const [product] = await getProducts({
@@ -28,11 +29,11 @@ const productForScript = {
 };
 const categories = product?.categories;
 const similarProducts = await getSimilarProductsByCategories(
-  categories?.[0].id
+  categories?.[0].id,
 );
 
 export async function getStaticPaths() {
-  const products = await getProducts();
+  const products = await getAllProducts();
   const paths = products?.map((product) => ({
     params: {
       slug: decodeURIComponent(product.slug),
@@ -234,12 +235,12 @@ export async function getStaticPaths() {
                                               value={option}
                                               label={option}
                                             />
-                                          )
+                                          ),
                                         )}
                                       </div>
                                     </div>
                                   );
-                                }
+                                },
                               )}
                               <div class="invalid-feedback d-none mt-2 js-options" />
                             </div>
@@ -383,8 +384,7 @@ export async function getStaticPaths() {
   src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
   integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
   crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
+  referrerpolicy="no-referrer"></script>
 <script>
   // initialize owl carousel
   var $owl = $(".owl-carousel");
@@ -455,7 +455,7 @@ export async function getStaticPaths() {
       product: productDetails,
       product_stock_url,
       storeKey,
-    })
+    }),
   );
   $(".js-buy-now").on(
     "click",
@@ -465,11 +465,11 @@ export async function getStaticPaths() {
       product: productDetails,
       product_stock_url,
       storeKey,
-    })
+    }),
   );
   if (!!facebookPixelId) {
     const fbEventID = `event.id.${Math.floor(
-      Math.random() * 1000000000000
+      Math.random() * 1000000000000,
     )}-${Date.now()}`;
     sendMetaEventsToServerByStore(storeKey, {
       pixelId: `${facebookPixelId}`,
@@ -502,7 +502,7 @@ export async function getStaticPaths() {
         version: "1.0.0",
         timestamp: `${Date.now()}`,
       },
-      { eventID: fbEventID }
+      { eventID: fbEventID },
     );
   }
 </script>
