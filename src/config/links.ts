@@ -1,6 +1,7 @@
 const env = import.meta.env;
 const consumerKey = env.WC_API_DEPLOY_CONSUMER_KEY;
 const consumerSecret = env.WC_API_DEPLOY_CONSUMER_SECRET;
+console.log("<<<<<<<<<<main url>>>>>>>>>>", `https://${env.WC_API_DEPLOY_URL}`)
 const globalLinks = {
   consumerKey,
   consumerSecret,
