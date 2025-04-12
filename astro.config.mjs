@@ -3,6 +3,7 @@ import image from "@astrojs/image";
 import purgecss from "astro-purgecss";
 import sitemap from "@astrojs/sitemap";
 import robotsTxt from "astro-robots-txt";
+import alpinejs from '@astrojs/alpinejs';
 
 import partytown from "@astrojs/partytown";
 import tailwindcss from "@tailwindcss/vite";
@@ -34,7 +35,8 @@ export default defineConfig({
       config: {
         forward: ["dataLayer.push"]
       },
-    })
+    }),
+    alpinejs()
   ],
   vite: {
     plugins: [tailwindcss()]

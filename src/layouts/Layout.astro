@@ -1,20 +1,18 @@
 ---
-import { Props as SeoProps } from "astro-seo";
+import { type Props as SeoProps } from "astro-seo";
 import Head from "../components/head/index.astro";
 import Header from "../components/header/index.astro";
 import Footer from "../components/footer/index.astro";
-import NavBar from "../components/navbar/index.astro";
 import { getStorePages } from "../helpers/services/pages";
 import getCategories from "../helpers/services/products/categories";
-import { getStoreDetails } from "../helpers/services/store/details";
 import { getImageLink } from "../helpers/images";
 import Logo from "../components/icons/zzenz.astro";
-// tailwindcss
+// styles
 import "../assets/css/global.css";
 // font
-import "@fontsource/poppins/300.css";
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/600.css";
+import "@fontsource/inter/300.css";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/600.css";
 
 // get pages
 const { pages } = await getStorePages();
@@ -57,15 +55,7 @@ const { ...seoProps } = Astro.props;
 		store_checkout_url={storeDetails.store_checkout_url}
 		{...seoProps}
 	/>
-	<body class="overflow-x-hidden">
-		<NavBar
-			pages={pages}
-			categories={categories}
-			logo={logo}
-			contacts={contacts}
-			name={storeName}
-			socialMedia={store_primary_settings?.store_social_media}
-		/>
+	<body class="overflow-x-hidden min-h-screen flex flex-col bg-gray-50">
 		<!-- header nav -->
 		<Header
 			name={storeName}
@@ -94,69 +84,19 @@ const { ...seoProps } = Astro.props;
 		</div>
 		<!-- end footer -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script
-			src="https://code.jquery.com/jquery-3.6.4.slim.min.js"
-			integrity="sha256-a2yjHM4jnF9f54xUQakjZGaqYs/V1CYvWpoqZzC2/Bw="
-			crossorigin="anonymous"></script>
-		<script
-			src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-			integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-			crossorigin="anonymous"></script>
-
-		<!-- custom js to open mobile menu -->
-		<script type="text/javascript">
-			const _overlay = $(".js-mobile__overlay");
-			const _openBtn = $(".js-mobile__menu-trigger");
-			const _closeBtn = $(".js-mobile__menu-closer");
-			const _mobileMenu = $(".js-mobile__menu");
-			const _mainContainer = $(".js-main__container");
-
-			// close menu
-			function closeMenu(e) {
-				e.preventDefault();
-				_mobileMenu.removeClass("show");
-				$("body").removeClass("overflow-hidden");
-				_mainContainer.removeClass("translateX");
+		<!-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" is:inline defer></script> -->
+		 <script>
+			function reinitializeScripts() {
+				// Completely reset Alpine
+				if (window.Alpine) {
+					window.Alpine.start();
+					// uncomment this to reset the store
+					// window.Alpine.store = {};
+				}
 			}
-			_openBtn.click(function (e) {
-				e.preventDefault();
-				_mobileMenu.addClass("show");
-				$("body").addClass("overflow-hidden");
-				_mainContainer.addClass("translateX");
+			document.addEventListener('astro:page-load', () => {
+				reinitializeScripts();
 			});
-			_closeBtn.click(closeMenu);
-      _overlay.click(closeMenu);
-		</script>
-		<script>
-			import CartStorage from "../helpers/storage";
-
-			// display total number of products in basket
-			const _cartItems = document.querySelector(".js-cart-items");
-			const cart = new CartStorage();
-			const lineItems = await cart.getAllItems();
-			_cartItems.textContent = `${lineItems?.length || 0}`;
-		</script>
-		<script is:inline>
-			/**
-			 * display loader in each navigation
-			 */
-			let loaderSelector = document.querySelector(".js-loader");
-			document.addEventListener("astro:page-load", () => {
-				console.log("page-load");
-				loaderSelector = document.querySelector(".js-loader");
-			});
-			document.addEventListener("astro:before-preparation", (event) => {
-				console.log(
-					"before-preparation",
-					event.from.pathname,
-					event.to.pathname,
-				);
-				loaderSelector.classList.remove("hidden");
-			});
-			document.addEventListener("astro:after-swap", (event) => {
-				console.log("after-swap");
-				loaderSelector.classList.add("hidden");
-			});
-		</script>
+		 </script>
 	</body>
 </html>

@@ -1,0 +1,63 @@
+---
+// props of the component containst list of products
+interface Props {
+    products: Record<string, any>[];
+}
+const { products } = Astro.props;
+// map the products and split it ot array of arrays of 8 products
+const productsChunks = products.reduce((resultArray, item, index) => {
+  const chunkIndex = Math.floor(index / 12);
+  
+  if (!resultArray[chunkIndex]) {
+    resultArray[chunkIndex] = [];
+  }
+
+  resultArray[chunkIndex].push(item);
+  return resultArray;
+}, []);
+---
+
+<!-- Grille de produits -->
+<section id="products" class="section bg-gray-50">
+    <div class="container mx-auto flex flex-col gap-6">
+        <h2 class="text-3xl font-bold text-center mb-10">Nos Produits</h2>
+        {productsChunks?.map((chunk, index) => 
+        <div class={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${index>0 && 'hidden'} js-list`}>
+                {chunk.map(product => (
+                    <div class="card animate-fadeIn">
+                        <a href={`/product/${product.slug}`}>
+                            <img class="w-full h-[400px] object-contain object-center" src={product.images?.[0]?.src} alt="T-shirt Classique">
+                        </a>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">{product.name}</h3>
+                            <p class="text-rose-clair font-semibold mb-3">{product.price} DA</p>
+                            <button class="btn-primary w-full">Commander</button>
+                        </div>
+                    </div>
+                ))}
+        </div>
+        )}
+    </div>
+</section>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const nextList = entry.target.nextElementSibling;
+                if (nextList?.classList.contains('js-list')) {
+                    nextList.classList.remove('hidden');
+                }
+                // Stop observing this element after it's been shown
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        rootMargin: '0px 0px 20% 0px'
+    });
+
+    // Start observing all js-list elements
+    document.querySelectorAll('.js-list').forEach(list => {
+        observer.observe(list);
+    });
+</script>

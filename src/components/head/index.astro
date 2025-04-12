@@ -2,14 +2,6 @@
 import { ClientRouter } from 'astro:transitions';
 import { SEO, Props as SeoProps } from "astro-seo";
 import { GoogleAnalytics } from "@astrolib/analytics";
-import { getStoreDetails } from "../../helpers/services/store/details";
-import globalLinks from "../../config/links";
-import { generateFavicon } from "../../helpers/images";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "../../assets/css/helpers.css";
-import "../../assets/css/media.css";
-import "../../assets/css/owl.min.css";
-import "../../assets/css/owl.default.min.css";
 
 export interface Props extends SeoProps {
   image?: string;
@@ -48,7 +40,7 @@ let favicon = ""
   <meta name="generator" content={"zzenz v1.0.0"} />
   <SEO
     title={title}
-    titleTemplate={`%s - ${import.meta.env.DOMAIN}`}
+    titleTemplate={!!import.meta.env.DOMAIN ? `%s - ${import.meta.env.DOMAIN}` : `%s`}
     canonical={`${pageUrl}`}
     description={description}
     openGraph={{
@@ -145,4 +137,5 @@ let favicon = ""
     )
   }
   <ClientRouter />
+  <script src="/algeria-locations.js" is:inline></script>
 </head>

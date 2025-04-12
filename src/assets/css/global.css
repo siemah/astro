@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+
+@theme {
+    --color-rose-clair: #FFD1DC; /* Define your custom primary color */
+}
+
+@layer components {
+    button {
+        @apply cursor-pointer;
+    }
+    .btn-primary {
+        @apply !text-black !bg-rose-clair font-semibold py-3 px-4 !rounded transition-all duration-300;
+    }
+
+    .bg-primary {
+        @apply !bg-rose-clair;
+    }
+
+    .card {
+        @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300;
+    }
+
+    .section {
+        @apply md:py-12 px-4 sm:px-6 lg:px-8;
+    }
+}
+
+/* Animations personnalisées */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+
+
+@media (min-width: 1280px) {
+    .container {
+      max-width: 1280px;
+    }
+  }
+  
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1536px;
+    }
+  }

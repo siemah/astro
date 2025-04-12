@@ -1,17 +1,10 @@
 ---
-import Alert from "../../components/alert/index.astro";
-import ProductCard from "../../components/product-card/index.astro";
-import Picture from "../../components/picture/index.astro";
-import RadioBox from "../../components/radio-box/index.astro";
 import Layout from "../../layouts/Layout.astro";
-import Basket from "../../components/icons/basket.astro";
-import ProductDetailsList from "../../components/product-details-list/index.astro";
 import { getImageLink } from "../../helpers/images";
 // assets
 import getProducts from "../../helpers/services/products";
 import { stripHTML } from "../../helpers/data";
 import getSimilarProductsByCategories from "../../helpers/services/products/similar";
-import "../../assets/css/ql.css";
 import getAllProducts from "../../helpers/services/products/all";
 
 const { slug } = Astro.params;
@@ -31,6 +24,32 @@ const categories = product?.categories;
 const similarProducts = !!categories?.[0]?.id
   ? await getSimilarProductsByCategories(categories?.[0]?.id)
   : [];
+
+const shippingZones = await fetch(
+  `https://${import.meta.env.WC_API_DEPLOY_URL}/wp-json/wc/v3/shipping/zones?consumer_key=${import.meta.env.WC_API_DEPLOY_CONSUMER_KEY}&consumer_secret=${import.meta.env.WC_API_DEPLOY_CONSUMER_SECRET}`,
+).then((res) => res.json());
+
+const shippingMethods = await Promise.all(
+  shippingZones.map(async (zone) => {
+    const methods = await fetch(
+      `https://${import.meta.env.WC_API_DEPLOY_URL}/wp-json/wc/v3/shipping/zones/${zone.id}/methods?consumer_key=${import.meta.env.WC_API_DEPLOY_CONSUMER_KEY}&consumer_secret=${import.meta.env.WC_API_DEPLOY_CONSUMER_SECRET}`,
+    )
+      .then((res) => res.json())
+      .catch((e) => console.log("error a ", zone.id));
+    return {
+      zone_id: zone.id,
+      zone_name: zone.name,
+      methods,
+    };
+  }),
+);
+
+const shippingData = {
+  zones: shippingZones,
+  methods: shippingMethods,
+};
+
+console.log(JSON.stringify(shippingData.methods, null, 2));
 
 export async function getStaticPaths() {
   const products = await getAllProducts();
@@ -58,451 +77,714 @@ export async function getStaticPaths() {
         // @ts-ignore
         fetchpriority: "high",
       },
-      {
-        rel: "preload",
-        href: "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js",
-      },
     ],
   }}
 >
-  <main class="main-container js-main__container">
-    <!-- main content -->
-    <div class="container">
-      <!-- breadcrumb menu -->
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0 bg-white pv-34 pl-0 border-bottom-grey">
-          <li class="breadcrumb-item" aria-current="page">
-            <a class="color-black" href="/">Accueil</a>
-          </li>
-          <li class="breadcrumb-item" aria-current="page">
-            <a class="color-black" href="/shop/1/">Boutique</a>
-          </li>
-        </ol>
-      </nav>
-      <!-- end of breadcrumb menu -->
-
-      <!-- product details  -->
-      <div class="row mt-2 mt-lg-5 product-container">
-        <!-- product images carousel -->
-        <div class="col-sm-12">
+  <main class="flex-grow">
+    <!-- Détail du produit -->
+    <section class="section bg-white">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Galerie de photos -->
           <div
-            class="owl-carousel owl-theme owl-loaded overflow-hidden height-400px"
+            x-data={`{ activeSlide: 0, slides: ${JSON.stringify(product.images.map((image) => image.src))} }`}
           >
-            <div class="owl-stage-outer height-100 pr-3 pl-3">
-              <div class="owl-stage height-100">
-                {
-                  product.images?.map((image, index) => (
-                    <div class="owl-item height-100">
-                      <div class="carousel-item height-100 d-flex align-items-center">
-                        <Picture
-                          class="card-img-top"
-                          src={image.src}
-                          alt={product.name}
-                          class="w-100 h-100"
-                          containerClass="w-100 h-100"
-                          style="object-fit: contain;object-position: center;"
-                          id={`product-image-${index}`}
-                          sources={[
-                            {
-                              srcset: getImageLink(image.src),
-                            },
-                          ]}
-                          loading={index === 0 ? "eager" : "lazy"}
-                        />
-                      </div>
-                    </div>
-                  ))
+            <div
+              class="relative h-[500px] overflow-hidden mb-4 rounded-lg shadow-sm"
+            >
+              <template x-for="(slide, index) in slides" :key="index">
+                <div x-show="activeSlide === index" class="absolute inset-0">
+                  <img
+                    :src="slide"
+                    class="w-full h-full object-contain object-center"
+                    :alt="`Image ${index + 1} du produit`"
+                  />
+                </div>
+              </template>
+              <button
+                @click="activeSlide = (activeSlide - 1 + slides.length) % slides.length"
+                class="absolute left-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+              <button
+                @click="activeSlide = (activeSlide + 1) % slides.length"
+                class="absolute right-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-2">
+              <template x-for="(slide, index) in slides" :key="index">
+                <button
+                  @click="activeSlide = index"
+                  :class="{'ring-2 ring-rose-clair': activeSlide === index}"
+                  class="shrink-0 w-20 h-20 rounded overflow-hidden"
+                >
+                  <img
+                    :src="slide"
+                    class="w-full h-full object-cover object-center"
+                    :alt="`Miniature ${index + 1} du produit`"
+                  />
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- Informations produit -->
+          <div
+            class="flex flex-col gap-4 md:gap-6"
+            x-data={`{
+                ${
+                  product?.attributes
+                    ?.map(
+                      (attribute) =>
+                        `selected_${attribute.name}: '${attribute.options?.[0]}'`,
+                    )
+                    .join(", ") || "attributes: []"
+                },
+                isFormOpen: false,
+                cartItems: [
+                    {
+                        id: 1,
+                        name: 'T-shirt Classique',
+                        price: 2500,
+                        color: 'Noir',
+                        size: 'M',
+                        quantity: 1,
+                        image: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80'
+                    },
+                    {
+                        id: 2,
+                        name: 'Pantalon Casual',
+                        price: 3800,
+                        color: 'Bleu',
+                        size: 'L',
+                        quantity: 1,
+                        image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80'
+                    }
+                ],
+                cartTotal() {
+                    return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                },
+                cartCount() {
+                    return this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+                },
+                formData: {
+                    fullName: '',
+                    phone: '',
+                    wilaya: '',
+                    commune: '',
+                    deliveryMethod: 'home',
+                    deliveryPrice: 600,
+                    country: 'DZ',
+                    address: ''
+                },
+                wilayas: AlgeriaLocations.wilayas,
+                communesByWilaya: AlgeriaLocations.communesByWilaya,
+                selectedWilayaCommunes: [],
+                wilayaSearchTerm: '',
+                communeSearchTerm: '',
+                filteredWilayas() {
+                    return this.wilayas.filter(w => 
+                        w.name.toLowerCase().includes(this.wilayaSearchTerm.toLowerCase()) || 
+                        w.code.includes(this.wilayaSearchTerm)
+                    );
+                },
+                filteredCommunes() {
+                    return this.selectedWilayaCommunes.filter(c => 
+                        c.toLowerCase().includes(this.communeSearchTerm.toLowerCase())
+                    );
+                },
+                setWilaya(wilayaCode) {
+                    this.formData.wilaya = wilayaCode;
+                    this.formData.commune = '';
+                    this.selectedWilayaCommunes = this.communesByWilaya[wilayaCode] || [];
+                    this.communeSearchTerm = '';
+                },
+                submitOrder() {
+                    const woocommerceData = AlgeriaLocations.formatWooCommerceData(
+                        this.formData, 
+                        this.cartItems.map(item => ({
+                            id: item.id,
+                            quantity: item.quantity,
+                            variationId: 0,
+                            meta_data: [
+                                { key: 'Couleur', value: item.color },
+                                { key: 'Taille', value: item.size }
+                            ]
+                        }))
+                    );
+                    
+                    
                 }
+            }`}
+          >
+            <div class="flex flex-col gap-2">
+              <h1
+                class="text-3xl font-bold mb-0"
+                data-product-name={product.name}
+              >
+                {product.name}
+              </h1>
+              <p
+                class="mb-0 text-rose-clair text-2xl font-semibold"
+                data-product-price={product.price}
+              >
+                {product.price} DA
+              </p>
+              <div class="hidden" data-product-id={product.id}></div>
+              <div class="hidden" data-product-image={product.images?.[0]?.src}>
+              </div>
+              <div
+                class="hidden"
+                data-product-attributes={JSON.stringify(product.attributes)}
+              >
               </div>
             </div>
 
-            <div
-              class="owl-prev product-image__navigation-item bg-lightgrey d-flex justify-content-center align-items-center js-owl_navigation_prev"
-              role="button"
-              aria-label="precedant"
-              aria-labelledby="precedant"
-            >
-              <svg width="14px" height="25px" viewBox="0 0 14 25">
-                <g
-                  stroke="none"
-                  stroke-width="1"
-                  fill="none"
-                  fill-rule="evenodd"
-                >
-                  <path
-                    d="M18.7515574,6.19589215 L18.3607845,5.80512031 C18.1020797,5.54641538 17.6837344,5.54641538 17.4250824,5.80512031 L6.66998881,16.5656973 L-4.09058878,5.80512031 C-4.34929365,5.54641538 -4.76758619,5.54641538 -5.02629106,5.80512031 L-5.41706292,6.19589215 C-5.67576785,6.45459704 -5.67576785,6.87294333 -5.41706292,7.13159453 L6.19665418,18.7508482 C6.45530554,19.0095539 6.87365151,19.0095539 7.13235629,18.7508482 L18.7460746,7.13159453 C19.0102622,6.87294333 19.0102622,6.45459704 18.7515574,6.19589215 L18.7515574,6.19589215 Z"
-                    fill="#595959"
-                    transform="translate(6.666901, 12.277992) scale(-1, 1) rotate(-90.000000) translate(-6.666901, -12.277992) "
-                  >
-                  </path>
-                </g>
-              </svg>
-            </div>
-            <div
-              class="owl-next product-image__navigation-item bg-lightgrey d-flex justify-content-center align-items-center js-owl_navigation_next"
-              role="button"
-              aria-label="suivant"
-              aria-labelledby="suivant"
-            >
-              <svg width="14px" height="25px" viewBox="0 0 14 25">
-                <g
-                  stroke="none"
-                  stroke-width="1"
-                  fill="none"
-                  fill-rule="evenodd"
-                >
-                  <path
-                    d="M18.7515498,6.19589978 L18.3607768,5.80512794 C18.1020721,5.54642301 17.6837268,5.54642301 17.4250747,5.80512794 L6.66998118,16.565705 L-4.0905964,5.80512794 C-4.34930127,5.54642301 -4.76759382,5.54642301 -5.02629869,5.80512794 L-5.41707054,6.19589978 C-5.67577548,6.45460467 -5.67577548,6.87295096 -5.41707054,7.13160216 L6.19664656,18.7508559 C6.45529791,19.0095615 6.87364388,19.0095615 7.13234866,18.7508559 L18.746067,7.13160216 C19.0102546,6.87295096 19.0102546,6.45460467 18.7515498,6.19589978 L18.7515498,6.19589978 Z"
-                    fill="#595959"
-                    transform="translate(6.666916, 12.278015) rotate(-90.000000) translate(-6.666916, -12.278015) "
-                  >
-                  </path>
-                </g>
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-12">
-          <div class="border-bottom-grey">
-            <div class="col-sm-12 offset-lg-2 col-lg-8">
-              <div class="d-flex flex-column-reverse flex-lg-column">
-                <div class="text-center">
-                  <div class="product-def pb-4">
-                    <div class="product__title-block mb-4 pt-3">
-                      <h4 class="fs-12 color-light-black mb-1">
-                        {product.categories?.[0]?.name}
-                      </h4>
-                      <h1 class="fs-24 color-light-black mb-0">
-                        {product.name}
-                      </h1>
-                      <Alert variant={"success"} class="js-alert" />
-                    </div>
-                    <div class="product__price-block mb-4">
-                      <div class="fs-24 color-green mb-1">
-                        <sup>DZD</sup>{
-                          product?.sale_price || product?.regular_price
-                        }
-                      </div>
-                      {
-                        !!product?.sale_price && (
-                          <div class="fs-12 color-light-black mb-0">
-                            <del>
-                              <sup>DZD</sup>
-                              {product?.regular_price}
-                            </del>
-                          </div>
-                        )
-                      }
-                    </div>
-
-                    <div class="mb-4">
-                      <form
-                        class="product-choice pt-3 pb-3 pt-lg-4 pb-lg-4 border-bottom-grey js-form"
-                        action="#"
-                        data-product={JSON.stringify(productForScript)}
-                        data-facebook-pixel={JSON.stringify(productForScript)}
+            <!-- Couleurs -->
+            {
+              product.attributes?.map((attribute) => (
+                <div class="attibutes">
+                  <h3 class="font-semibold mb-3 capitalize">
+                    {attribute.name}:{" "}
+                    <span data-attribute={attribute.name}>
+                      {attribute.options?.[0]}
+                    </span>
+                  </h3>
+                  <div class="flex flex-wrap gap-3">
+                    {attribute.options?.map((option) => (
+                      <button
+                        onclick={`
+                                          // Update the displayed selected value
+                                          document.querySelector('[data-attribute="${attribute.name}"]').textContent = '${option}';
+                                          
+                                          // Remove bg-rose-clair from all buttons of this attribute
+                                          this.parentElement.querySelectorAll('button').forEach(btn => {
+                                              btn.classList.remove('bg-rose-clair');
+                                          });
+                                          
+                                          // Add bg-rose-clair to clicked button
+                                          this.classList.add('bg-rose-clair');
+                                      `}
+                        class={`px-4 h-10 rounded-md border font-medium flex items-center justify-center ${option === attribute.options?.[0] ? "bg-rose-clair" : ""}`}
                       >
-                        <input
-                          type="hidden"
-                          name="product_id"
-                          value={product.id}
-                        />
-                        {
-                          // @ts-ignore
-                          product?.attributes?.length > 0 && (
-                            <div class="d-flex flex-column align-items-center">
-                              <h4>Options</h4>
-                              {product.attributes?.map(
-                                (attribute: any, index: number) => {
-                                  return (
-                                    <div
-                                      class={
-                                        index + 1 < product?.attributes?.length
-                                          ? "mb-3"
-                                          : ""
-                                      }
-                                    >
-                                      <h6 class="mb-3">
-                                        <strong class="text-capitalize">
-                                          {attribute?.name}:
-                                        </strong>
-                                      </h6>
-                                      <div class="d-flex flex-wrap gap-3">
-                                        {attribute?.options?.map(
-                                          (option: any) => (
-                                            <RadioBox
-                                              name={`options[${attribute?.name}]`}
-                                              value={option}
-                                              label={option}
-                                            />
-                                          ),
-                                        )}
-                                      </div>
-                                    </div>
-                                  );
-                                },
-                              )}
-                              <div class="invalid-feedback d-none mt-2 js-options" />
-                            </div>
-                          )
-                        }
-                        <div
-                          class="d-flex flex-column flex-lg-row justify-content-center mt-4"
-                        >
-                          <div
-                            class="action-form__container bg-white d-flex flex-column flex-lg-row justify-content-between align-items-center z-index_2"
-                          >
-                            <div class="pl-0 pl-lg-3 w-100">
-                              <div
-                                class="d-flex flex-row justify-content-start justify-content-sm-between justify-content-center align-items-center gap-3"
-                              >
-                                <div
-                                  class="quantity-form__container d-flex flex-row align-items-center"
-                                >
-                                  <label
-                                    class="d-block text-left fs-14 pl-0 mr-3 mb-0"
-                                  >
-                                    Qte
-                                  </label>
-                                  <div
-                                    class="quantity-container mb-0 mb-sm-0 mr-0 mr-lg-5 input-group border-green rounded-0 overflow-hidden max-width-110px"
-                                  >
-                                    <div class="input-group-prepend">
-                                      <button
-                                        class="input-group-text bg-transparent color-green no-border js-crtl__qty"
-                                        aria-label="moin"
-                                        data-operation="-"
-                                      >
-                                        -
-                                      </button>
-                                    </div>
-                                    <input
-                                      type="text"
-                                      class="form-control no-border color-green text-center"
-                                      value="1"
-                                      name="quantity"
-                                      aria-label="Quantite"
-                                    />
-                                    <div class="input-group-append">
-                                      <button
-                                        class="input-group-text bg-transparent color-green no-border js-crtl__qty"
-                                        aria-label="plus"
-                                        data-operation="+"
-                                      >
-                                        +
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="btns-form__container d-flex">
-                                  <button
-                                    class="btn bg-green flex_1 color-white btn-block no-border rounded-0 pt-2 pb-2 width-180px fs-14 animation-pulse js-buy-now"
-                                    aria-label="Acheter maintenant"
-                                    type="button"
-                                  >
-                                    Acheter maintenant
-                                  </button>
-                                  <button
-                                    class="btn btn-outline-success color-white w-auto rounded-0 pt-2 pb-2 width-180px"
-                                    aria-label="Ajouter au panier"
-                                  >
-                                    <Basket color="#8BC540" />
-                                  </button>
-                                </div>
-                              </div>
-                              <div
-                                class="invalid-feedback d-none mt-2 js-quantity"
-                              >
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                    <div
-                      class="product__description color-light-black mb-0 ql-content"
-                      set:html={product.description}
-                    />
-                    <div>
-                      <h4 class="h5 color-light-black mb-1">
-                        Dimensions et Poids
-                      </h4>
-                      <ProductDetailsList
-                        height={product?.dimensions?.height}
-                        width={product?.dimensions?.width}
-                        length={product?.dimensions?.length}
-                        weight={product?.weight}
-                        sku={product?.sku}
-                      />
-                    </div>
+                        {option}
+                      </button>
+                    ))}
                   </div>
                 </div>
+              ))
+            }
+
+            <!-- Boutons d'action -->
+            <div class="flex flex-col gap-3 mt-auto">
+              <button
+                id="addToCartBtn"
+                class="btn-primary flex items-center justify-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
+                </svg>
+                Ajouter au panier
+              </button>
+              <button
+                @click="addToCart();isFormOpen = true"
+                class="!py-3 bg-black text-white font-semibold rounded hover:bg-gray-800 transition-colors duration-300 flex items-center justify-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path>
+                </svg>
+                Achat direct
+              </button>
+            </div>
+            <!-- Description -->
+            <div class="mb-8">
+              <h3 class="font-semibold mb-3">Description</h3>
+              <p class="text-gray-600" set:html={product.description} />
+            </div>
+
+            <!-- Formulaire de commande (pop-up) -->
+            <div
+              x-show="isFormOpen"
+              class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            >
+              <div
+                @click.outside="isFormOpen = false"
+                class="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto animate-fadeIn"
+              >
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-xl font-bold">Formulaire de commande</h3>
+                  <button
+                    @click="isFormOpen = false"
+                    class="text-gray-500 hover:text-black"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Section Panier -->
+                <div class="mb-6 pb-4 border-b">
+                  <h4 class="font-semibold text-lg mb-3">Votre commande</h4>
+
+                  <div
+                    class="space-y-3 mb-4"
+                    x-data="{ cartItems: [] }"
+                    x-init="$watch('isFormOpen', (value) => {
+                                      if(value) {
+                                          try {
+                                              const storedCart = localStorage.getItem('cart');
+                                              cartItems = storedCart ? JSON.parse(storedCart) : [];
+                                          } catch(e) {
+                                              cartItems = [];
+                                          }
+                                      }
+                                  })"
+                  >
+                    <template x-if="cartItems.length === 0">
+                      <p class="text-gray-500 text-center py-4">
+                        Votre panier est vide
+                      </p>
+                    </template>
+
+                    <template x-for="(item, index) in cartItems" :key="index">
+                      <div class="flex items-start">
+                        <div
+                          class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200"
+                        >
+                          <img
+                            :src="item.image || ''"
+                            :alt="item.name"
+                            class="h-full w-full object-cover object-center"
+                            @error="$el.src = 'https://via.placeholder.com/150'"
+                          />
+                        </div>
+                        <div class="ml-3 flex-1">
+                          <div class="flex justify-between">
+                            <h5
+                              class="text-sm font-medium"
+                              x-text="item.name || 'Produit'"
+                            >
+                            </h5>
+                            <p
+                              class="text-base font-semibold text-black"
+                              x-text="(item.price || 0) + ' DA'"
+                            >
+                            </p>
+                          </div>
+                          <template
+                            x-if="item.attributes && Object.keys(item.attributes).length"
+                          >
+                            <p
+                              class="text-xs text-gray-500"
+                              x-text="Object.entries(item.attributes).map(([key, value]) => `${value}`).join(', ')"
+                            >
+                            </p>
+                          </template>
+                          <p
+                            class="text-xs text-gray-500"
+                            x-text="'Qté: ' + (item.quantity || 1)"
+                          >
+                          </p>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium"></span>
+                    <span class="text-sm font-medium"></span>
+                  </div>
+
+                  <a
+                    href="/cart"
+                    class="block text-center py-2 px-4 hover:!no-underline !text-black !bg-gray-100 hover:!bg-gray-200 rounded-md text-sm font-medium transition-colors duration-200"
+                  >
+                    Accéder au panier
+                  </a>
+                </div>
+
+                <form class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Nom complet</label
+                    >
+                    <input
+                      type="text"
+                      x-model="formData.fullName"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Téléphone</label
+                    >
+                    <input
+                      type="tel"
+                      x-model="formData.phone"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Wilaya</label
+                    >
+                    <div
+                      class="relative state__container"
+                      x-data="{ open: false }"
+                    >
+                      <div
+                        @click="open = !open"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair cursor-pointer flex justify-between items-center"
+                      >
+                        <span
+                          x-text="formData.wilaya ? `${formData.wilaya.substring(3)} - ${wilayas.find(w => w.code === formData.wilaya)?.name}` : 'Sélectionner une wilaya'"
+                        ></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5 text-gray-400"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                        </svg>
+                      </div>
+                      <div
+                        x-show="open"
+                        @click.away="open = false"
+                        class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md overflow-hidden"
+                      >
+                        <div class="px-3 py-2 border-b">
+                          <input
+                            type="text"
+                            x-model="wilayaSearchTerm"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair"
+                            placeholder="Rechercher une wilaya..."
+                          />
+                        </div>
+                        <div
+                          class="max-h-40 overflow-y-auto"
+                          style="height: 160px; overflow-y: scroll;"
+                        >
+                          <template
+                            x-for="wilaya in filteredWilayas"
+                            :key="wilaya.code"
+                          >
+                            <div
+                              @click="setWilaya(wilaya.code); open = false"
+                              class="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                            >
+                              <input
+                                type="radio"
+                                :name="'state'"
+                                :value="wilaya.code"
+                                :checked="formData.wilaya === wilaya.code"
+                                class="hidden"
+                                @change="setWilaya(wilaya.code)"
+                              />
+                              <span
+                                x-text="`${wilaya.code.substring(3)} - ${wilaya.name}`"
+                              ></span>
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Commune</label
+                    >
+                    <div class="relative" x-data="{ open: false }">
+                      <div
+                        @click="open = !open"
+                        :class="{'opacity-50 cursor-not-allowed': !formData.wilaya, 'cursor-pointer': formData.wilaya}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair flex justify-between items-center"
+                      >
+                        <span
+                          x-text="formData.commune || 'Sélectionner une commune'"
+                        ></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5 text-gray-400"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                        </svg>
+                      </div>
+                      <div
+                        x-show="open && formData.wilaya"
+                        @click.away="open = false"
+                        class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md overflow-hidden"
+                      >
+                        <div class="px-3 py-2 border-b">
+                          <input
+                            type="text"
+                            x-model="communeSearchTerm"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair"
+                            placeholder="Rechercher une commune..."
+                          />
+                        </div>
+                        <div
+                          class="max-h-40 overflow-y-auto"
+                          style="height: 160px; overflow-y: scroll;"
+                        >
+                          <template x-if="selectedWilayaCommunes.length > 0">
+                            <template
+                              x-for="commune in filteredCommunes"
+                              :key="commune"
+                            >
+                              <div
+                                @click="formData.commune = commune; open = false"
+                                class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                              >
+                                <span x-text="commune"></span>
+                              </div>
+                            </template>
+                          </template>
+                          <template x-if="selectedWilayaCommunes.length === 0">
+                            <div class="px-3 py-2 text-gray-500">
+                              Aucune commune disponible pour cette wilaya
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                      >Adresse détaillée</label
+                    >
+                    <textarea
+                      x-model="formData.address"
+                      rows="3"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-clair"
+                      required></textarea>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-3"
+                      >Tarif de livraison</label
+                    >
+                    <div class="space-y-3 shipping__container">
+                      <div
+                        @click="formData.deliveryMethod = 'home'; formData.deliveryPrice = 600"
+                        class="border rounded-md p-3 cursor-pointer transition-colors duration-200"
+                        :class="{'bg-rose-clair border-rose-clair text-black': formData.deliveryMethod === 'home', 'bg-white border-gray-300 text-gray-700': formData.deliveryMethod !== 'home'}"
+                      >
+                        <span class="block font-medium"
+                          >Livraison à domicile - 600 DA</span
+                        >
+                      </div>
+                      <div
+                        @click="formData.deliveryMethod = 'office'; formData.deliveryPrice = 400"
+                        class="border rounded-md p-3 cursor-pointer transition-colors duration-200"
+                        :class="{'bg-rose-clair border-rose-clair text-black': formData.deliveryMethod === 'office', 'bg-white border-gray-300 text-gray-700': formData.deliveryMethod !== 'office'}"
+                      >
+                        <span class="block font-medium"
+                          >Livraison au bureau - 400 DA</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="border-t pt-4">
+                    <div class="flex justify-between mb-2">
+                      <span>Sous-total:</span>
+                      <span x-text="`${cartTotal().toLocaleString('fr-DZ')} DA`"
+                      ></span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                      <span>Livraison:</span>
+                      <span
+                        x-text="`${formData.deliveryPrice.toLocaleString('fr-DZ')} DA`"
+                      ></span>
+                    </div>
+                    <div class="flex justify-between font-bold">
+                      <span>Total:</span>
+                      <span
+                        x-text="`${(cartTotal() + formData.deliveryPrice).toLocaleString('fr-DZ')} DA`"
+                      ></span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="btn-primary w-full py-3"
+                    @click.prevent="submitOrder()"
+                  >
+                    Commander maintenant
+                  </button>
+                </form>
               </div>
             </div>
           </div>
         </div>
-        <!-- end of product images carousel -->
       </div>
-      <!-- end of product details  -->
-
-      <!-- similar products -->
-      <div class="row mt-30px">
-        <div class="fs-24 col-sm-12">
-          <h1 class="fs-24 color-black">Recommander</h1>
-          <h2 class="fs-14">
-            <a class="color-black" href={`/shop/1/`}> Voir tout</a>
-          </h2>
-        </div>
-      </div>
-      <div class="shop__product-list row mb-60px">
-        <!-- product card item -->
-        {
-          similarProducts?.map((currentProduct) => {
-            if (product?.slug !== currentProduct?.slug) {
-              return (
-                <ProductCard
-                  href={`/product/${currentProduct?.slug}/`}
-                  name={currentProduct?.name}
-                  category={currentProduct?.categories?.[0]?.name}
-                  regular_price={currentProduct?.regular_price}
-                  sale_price={currentProduct?.sale_price}
-                  image={currentProduct.images[0].src}
-                />
-              );
-            }
-            return null;
-          })
-        }
-        <!-- end of product card item -->
-      </div>
-      <!-- end similar products -->
-    </div>
-    <!-- end main content -->
+    </section>
   </main>
 </Layout>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
-  integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"></script>
-<script>
-  // initialize owl carousel
-  var $owl = $(".owl-carousel");
-  $owl.owlCarousel({
-    loop: false,
-    margin: 20,
-    responsiveClass: true,
-    dotsClass: "hidden",
-    dots: false,
-    nav: false,
-    autoplay: true,
-    autoplayHoverPause: true,
-    responsive: {
-      0: {
-        items: 1,
-      },
-      600: {
-        items: 2,
-      },
-      1000: {
-        items: 3,
-      },
-    },
-  });
 
-  // handle navigation using arrow previous and next
-  // Go to the next item
-  $(".js-owl_navigation_next").click(function () {
-    $owl.trigger("next.owl.carousel");
-  });
-  // Go to the previous item
-  $(".js-owl_navigation_prev").click(function () {
-    $owl.trigger("prev.owl.carousel");
-  });
-</script>
-<script>
-  const $btnsCtrl = $(".js-crtl__qty");
-  $btnsCtrl.click(function (e) {
-    e.preventDefault();
-    const _operation = this.dataset.operation;
-    const $parent = $(this).parent();
-    const $qtyInput =
-      _operation === "-" ? $parent.next("input") : $parent.prev("input");
+<script is:inline>
+  // Get product data from the server
+  const productData = {
+    id: document.querySelector("[data-product-id]")?.dataset.productId,
+    name: document.querySelector("[data-product-name]")?.dataset.productName,
+    price: document.querySelector("[data-product-price]")?.dataset.productPrice,
+    image: document.querySelector("[data-product-image]")?.dataset.productImage,
+    attributes: JSON.parse(
+      document.querySelector("[data-product-attributes]")?.dataset
+        .productAttributes || "[]",
+    ),
+  };
 
-    let _sum = parseInt($qtyInput.val(), 10);
-    _sum = _operation === "-" ? _sum - 1 : _sum + 1;
+  // Initialize cart from localStorage or create empty array
+  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    $qtyInput.val(_sum < 1 ? 1 : _sum);
-  });
-</script>
-<script>
-  import { sendMetaEventsToServerByStore } from "../../helpers/analytics/facebook-pixel";
-  import { extractStoreKeyFromShippingUrl } from "../../helpers/data";
-  import onAddToCart from "../../helpers/form/on-add-to-cart";
-
-  const $form = $(".js-form");
-  const facebookPixelId = $("[name='facebook-pixel-id']")?.attr("content");
-  const product_stock_url = $("[name='product_stock_url']")?.attr("content");
-  const store_shipping = $("[name='store_shipping']")?.attr("content");
-  const storeKey = extractStoreKeyFromShippingUrl(store_shipping);
-  const productDetails = $form.data("product");
-
-  $form.on(
-    "submit",
-    onAddToCart({
-      mode: "add-to-cart",
-      facebookPixelId,
-      product: productDetails,
-      product_stock_url,
-      storeKey,
-    }),
-  );
-  $(".js-buy-now").on(
-    "click",
-    onAddToCart({
-      mode: "buy-now",
-      facebookPixelId,
-      product: productDetails,
-      product_stock_url,
-      storeKey,
-    }),
-  );
-  if (!!facebookPixelId) {
-    const fbEventID = `event.id.${Math.floor(
-      Math.random() * 1000000000000,
-    )}-${Date.now()}`;
-    sendMetaEventsToServerByStore(storeKey, {
-      pixelId: `${facebookPixelId}`,
-      eventData: {
-        event_id: fbEventID,
-        event_name: "ViewContent",
-        action_source: "website",
-        event_source_url: window.location.href,
-      },
-      customData: {
-        content_name: `${productDetails?.name}`,
-        content_ids: [`${productDetails?.id}`],
-        content_type: "product",
-        contents: [{ id: `${productDetails?.id}`, quantity: 1 }],
-        value: Number(productDetails?.regular_price),
-        currency: "DZD",
-      },
+  // Function to get selected attributes
+  function getSelectedAttributes() {
+    const selectedAttributes = {};
+    productData.attributes.forEach((attr) => {
+      const selectedValue = document.querySelector(
+        `[data-attribute="${attr.name}"]`,
+      )?.textContent;
+      if (selectedValue) {
+        selectedAttributes[attr.name] = selectedValue;
+      }
     });
-    window?.fbq(
-      "track",
-      "ViewContent",
-      {
-        content_name: `${productDetails?.name}`,
-        content_ids: [`${productDetails?.id}`],
-        content_type: "product",
-        contents: [{ id: `${productDetails?.id}`, quantity: 1 }],
-        value: productDetails?.regular_price,
-        currency: "DZD",
-        source: "zzenz",
-        version: "1.0.0",
-        timestamp: `${Date.now()}`,
-      },
-      { eventID: fbEventID },
-    );
+    return selectedAttributes;
   }
+
+  // Function to add item to cart
+  const addToCart = function () {
+    const selectedAttributes = getSelectedAttributes();
+
+    const cartItem = {
+      id: productData.id,
+      name: productData.name,
+      price: parseFloat(productData.price),
+      image: productData.image,
+      attributes: selectedAttributes,
+      quantity: 1,
+    };
+
+    // Check if item already exists in cart with same attributes
+    const existingItemIndex = cart.findIndex((item) => {
+      // First check if it's the same product
+      if (item.id !== cartItem.id) return false;
+
+      // Then check if all attributes match
+      const itemAttrs = item.attributes;
+      const newAttrs = cartItem.attributes;
+
+      // Compare each attribute
+      for (const key in newAttrs) {
+        if (!itemAttrs[key] || itemAttrs[key] !== newAttrs[key]) {
+          return false;
+        }
+      }
+
+      // Check if all attributes from existing item are present in new item
+      for (const key in itemAttrs) {
+        if (!newAttrs[key] || newAttrs[key] !== itemAttrs[key]) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    if (existingItemIndex > -1) {
+      // Update quantity if item exists
+      cart[existingItemIndex].quantity += 1;
+    } else {
+      // Add new item if it doesn't exist
+      cart.push(cartItem);
+    }
+
+    // Save to localStorage
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Dispatch custom event for cart update
+    const cartCount = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+    window.dispatchEvent(
+      new CustomEvent("cart-updated", {
+        detail: { count: cartCount },
+      }),
+    );
+  };
+
+  // Add click event listener to the button
+  document.getElementById("addToCartBtn")?.addEventListener("click", addToCart);
 </script>

@@ -3,317 +3,307 @@ import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout title={"Panier"}>
-  <main class="main-container js-main__container">
-    <!-- carousel section -->
-    <div
-      class="jumbotron jumbotron-fluid p-0 m-0 p-20px carousel-image bg-skyblue overflow-hidden d-flex position-relative"
-      style={`min-height: 150px;`}
-    >
-      <div class="container position-relative">
-        <div
-          class="h-100 d-flex flex-column justify-content-center align-items-center"
-        >
-          <h1 class="w-auto px-5 py-3">Panier</h1>
-        </div>
-      </div>
-    </div>
-    <!-- end of carousel section -->
-
-    <!-- main content -->
-    <div class="container">
-      <!-- breadcrumb menu -->
-      <nav aria-label="breadcrumb p-1 ">
-        <ol class="breadcrumb mb-0 bg-white pt-4 pb-4 border-bottom-grey">
-          <li class="breadcrumb-item color-grey" aria-current="page">
-            <a class="color-grey" href="/">Home</a>
-          </li>
-          <li class="breadcrumb-item color-grey" aria-current="page">
-            <a class="color-grey" href="/cart/">Panier</a>
-          </li>
-        </ol>
-      </nav>
-      <!-- end of breadcrumb menu -->
-
-      <!-- cart content  -->
-      <div class="row pt-lg-5 pb-5 panier__product-list">
-        <div class="col-lg-9 pr-lg-2">
-          <table class="table table-theme_black">
-            <thead>
-              <tr class="border-bottom-black">
-                <td scope="col" class="color-grey">Produit</td>
-                <td scope="col" class="color-grey">Prix</td>
-                <td scope="col" class="color-grey">Quantite</td>
-                <td scope="col" class="color-grey">Total</td>
-                <td scope="col"></td>
-              </tr>
-            </thead>
-            <tbody class="js-cart-details">
-              <tr class="border-bottom-black">
-                <td
-                  class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
-                  scope="row"
-                  rowspan="5"
-                >
-                  <span class="panier__product-item">Chargement...</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="col-lg-3 pl-lg-2">
-          <div
-            class="card rounded-0 bg-grey pt-4 pb-4 p-4 overflow-hidden mt-5"
-          >
-            <div class="d-flex justify-content-between">
-              <div class="p-1 mr-2">Sous total</div>
-              <div class="p-1 pl-3 pr-3 rounded-0">
-                <span class="js-line-items-subtotal">0</span>
-                <sup>DZD</sup>
-              </div>
-            </div>
-            <div
-              class="d-flex card-item pt-3 pb-3 align-middle justify-content-between"
-            >
-              <div class="p-1 mr-2">
-                <div class="mb-3">Livraison</div>
-                <div class="d-flex flex-column mb-3">
-                  <label
-                    for="door"
-                    class="d-flex align-items-center form-label text-sm mb-1"
-                    ><input
-                      type="radio"
-                      name="shipping-mode"
-                      id="door"
-                      class="ml-0 mr-2"
-                      value="door"
-                      checked=""
-                    />
-                    <span>À domicile</span>
-                  </label>
-                  <label
-                    for="stop-desk"
-                    class="d-flex align-items-center form-label text-sm mb-0"
-                  >
-                    <input
-                      type="radio"
-                      name="shipping-mode"
-                      id="stop-desk"
-                      class="ml-0 mr-2"
-                      value="stop-desk"
-                    />
-                    <span>Stop desk</span>
-                  </label>
+  <main 
+    class="flex-grow cart-page" 
+    x-data={`{ 
+    items: JSON.parse(localStorage.getItem('cart') || '[]'),
+    get total() {
+        return this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    },
+    updateCartCount() {
+        const count = this.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        window.dispatchEvent(new CustomEvent('cart-updated', { 
+            detail: { count }
+        }));
+    },
+    removeItem(index) {
+      this.items = this.items.filter((_, i) => i !== index);
+      localStorage.setItem('cart', JSON.stringify(this.items));
+      this.updateCartCount();
+    },
+    incrementQuantity(id) {
+        const item = this.items.find(item => item.id === id);
+        if (item) item.quantity++;
+        localStorage.setItem('cart', JSON.stringify(this.items));
+        this.updateCartCount();
+    },
+    decrementQuantity(id) {
+        const item = this.items.find(item => item.id === id);
+        if (item && item.quantity > 1) item.quantity--;
+        localStorage.setItem('cart', JSON.stringify(this.items));
+        this.updateCartCount();
+    }
+  }`}
+>
+    <section class="section">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-8">Votre Panier</h1>
+            
+            <template x-if="items.length === 0">
+                <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <h2 class="text-2xl font-semibold mb-2">Votre panier est vide</h2>
+                    <p class="text-gray-600 mb-6">Découvrez nos produits et ajoutez ceux qui vous plaisent à votre panier.</p>
+                    <a href="/" class="btn-primary">Continuer mes achats</a>
                 </div>
-                <select
-                  name={"location"}
-                  class="form-control js-shipping__location"
-                >
-                </select>
-              </div>
-              <div
-                class="card__highlight p-1 pl-3 pr-3 rounded-02 bg-grey text-right"
-              >
-                <span class="js-shipping__total">0</span>
-                <sup class="fs-12">DZD</sup>
-              </div>
-            </div>
-            <div class="card-item pt-3 pb-3 align-middle border-bottom-black">
-              <div class="p-1 mr-2">Total</div>
-              <div
-                class="card__highlight bg-white color-green p-1 pl-3 pr-3 rounded-02 bg-grey fs-20 font-weight-bold"
-              >
-                <span class="js-line-items-total">0</span>
-                <sup>DZD</sup>
-              </div>
-            </div>
-            <div class="div pt-3 pb-3 d-flex">
-              <a
-                class="btn bg-green btn-lg btn-block color-white no-border rounded-0 pt-2 pb-2 fs-16"
-                href={"/cart/checkout/"}
-              >
-                Valider votre commande
-              </a>
-            </div>
-          </div>
+            </template>
+            
+            <template x-if="items.length > 0">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Liste des produits -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                            <ul class="divide-y">
+                                <template x-for="(item, index) in items" :key="index">
+                                  <li class="p-4 sm:p-6" :key="item.id">
+                                    <div class="flex flex-col sm:flex-row">
+                                        <div class="sm:w-24 sm:h-24 mb-4 sm:mb-0 flex-shrink-0">
+                                            <img :src="item.image" class="w-full h-full object-cover object-center rounded" :alt="item.name">
+                                        </div>
+                                        <div class="flex-grow sm:ml-4">
+                                            <div class="flex flex-col sm:flex-row sm:justify-between">
+                                                <div>
+                                                    <h3 class="font-semibold text-lg" x-text="item.name"></h3>
+                                                    <p class="text-gray-600 text-sm mb-2">
+                                                      <template x-for="([name, value], index) in Object.entries(item.attributes)" :key="name">
+                                                        <span class="capitalize">
+                                                            <span x-text="`${name}: ${value}`"></span>
+                                                            <span x-show="index < Object.entries(item.attributes).length - 1" class="mx-2">|</span>
+                                                        </span>
+                                                      </template>
+                                                    </p>
+                                                </div>
+                                                <div class="mt-2 sm:mt-0 text-rose-clair font-semibold" x-text="`${item.price.toLocaleString('fr-DZ')} DA`"></div>
+                                            </div>
+                                            <div class="flex justify-between items-center mt-4">
+                                                <div class="flex items-center border rounded overflow-hidden">
+                                                    <button @click="decrementQuantity(item.id)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200">-</button>
+                                                    <span class="px-3 py-1" x-text="item.quantity"></span>
+                                                    <button @click="incrementQuantity(item.id)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200">+</button>
+                                                </div>
+                                                <button @click="removeItem(index)" class="text-gray-500 hover:text-black">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Résumé de la commande -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+                            <h3 class="text-lg font-semibold mb-4">Résumé de la commande</h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Sous-total:</span>
+                                    <span x-text="`${total.toLocaleString('fr-DZ')} DA`"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Livraison:</span>
+                                    <span>À calculer</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t my-4"></div>
+                            
+                            <div class="flex justify-between font-semibold mb-6">
+                                <span>Total:</span>
+                                <span x-text="`${total.toLocaleString('fr-DZ')} DA`"></span>
+                            </div>
+                            
+                            <a href="/checkout" class="btn-primary block text-center py-3">Passer à la commande</a>
+                            
+                            <a href="/" class="block text-center mt-4 text-black hover:underline">Continuer mes achats</a>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
-      </div>
-    </div>
-  </main>
+    </section>
+</main>
 </Layout>
 <!-- end of cart content  -->
 
 <!-- end main content -->
 
 <script>
-  import { computeOrderTotal } from "../../helpers/cart";
-  import { LineItemType } from "../../helpers/cart/types";
-  import CartStorage from "../../helpers/storage";
-  import { fetchAndRenderShippingLocation } from "../../helpers/ui/cart";
+  // import { computeOrderTotal } from "../../helpers/cart";
+  // import { LineItemType } from "../../helpers/cart/types";
+  // import CartStorage from "../../helpers/storage";
+  // import { fetchAndRenderShippingLocation } from "../../helpers/ui/cart";
 
-  const renderItems = async () => {
-    const cart = new CartStorage();
-    let renderUI = "";
-    let lineItemsTotal = 0;
-    const [lineItems = [], products = {}] = await Promise.all([
-      cart.getAllItems(),
-      cart.getItemsDetails(),
-    ]);
-    // @ts-ignore
-    lineItems?.map((lineItem, index) => {
-      const product = products[lineItem.product_id];
-      lineItemsTotal += lineItem?.quantity * product?.regular_price;
-      const tr = `
-      <tr class="border-bottom-black">
-        <td
-          class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
-          scope="row"
-        >
-          <img
-            src="${product?.thumbnail?.src}"
-            alt="${product?.name}"
-            width="70px"
-          />
-          <span class="panier__product-item">${product?.name}</span>
-        </td>
-        <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
-          ${product?.regular_price}
-          <sup>DZD</sup>
-        </td>
-        <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
-          <div
-            class="d-flex justify-content-lg-start justify-content-center"
-          >
-            <div
-              class="quantity-container input-group mb-3 mt-2 justify-content-between rounded-0 overflow-hidden"
-            >
-              <div class="input-group-prepend">
-                <button
-                  class="input-group-text bg-transparent no-border js-crtl__qty"
-                  data-operation="-"
-                  data-item="${index}"
-                  data-itemid="${product.id}"
-                >
-                  -
-                </button>
-              </div>
-              <input
-                type="text"
-                class="form-control no-border text-center bg-white"
-                value="${lineItem?.quantity}"
-                aria-label="Quantite"
-                readonly
-              />
-              <div class="input-group-append">
-                <button
-                  class="input-group-text bg-transparent no-border js-crtl__qty"
-                  data-operation="+"
-                  data-item="${index}"
-                  data-itemid="${product.id}"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-        <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
-          <span class="js-item-total">${
-            lineItem?.quantity * product?.regular_price
-          }</span>
-          <sup>DZD</sup>
-        </td>
-        <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
-          <button 
-            class="bg-transparent no-border js-cart__remove-item"
-            data-item="${index}"
-          >
-            &times;
-          </button>
-        </td>
-      </tr>
-    `;
-      renderUI += tr;
-    });
+  // const renderItems = async () => {
+  //   const cart = new CartStorage();
+  //   let renderUI = "";
+  //   let lineItemsTotal = 0;
+  //   const [lineItems = [], products = {}] = await Promise.all([
+  //     cart.getAllItems(),
+  //     cart.getItemsDetails(),
+  //   ]);
+  //   // @ts-ignore
+  //   lineItems?.map((lineItem, index) => {
+  //     const product = products[lineItem.product_id];
+  //     lineItemsTotal += lineItem?.quantity * product?.regular_price;
+  //     const tr = `
+  //     <tr class="border-bottom-black">
+  //       <td
+  //         class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
+  //         scope="row"
+  //       >
+  //         <img
+  //           src="${product?.thumbnail?.src}"
+  //           alt="${product?.name}"
+  //           width="70px"
+  //         />
+  //         <span class="panier__product-item">${product?.name}</span>
+  //       </td>
+  //       <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
+  //         ${product?.regular_price}
+  //         <sup>DZD</sup>
+  //       </td>
+  //       <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
+  //         <div
+  //           class="d-flex justify-content-lg-start justify-content-center"
+  //         >
+  //           <div
+  //             class="quantity-container input-group mb-3 mt-2 justify-content-between rounded-0 overflow-hidden"
+  //           >
+  //             <div class="input-group-prepend">
+  //               <button
+  //                 class="input-group-text bg-transparent no-border js-crtl__qty"
+  //                 data-operation="-"
+  //                 data-item="${index}"
+  //                 data-itemid="${product.id}"
+  //               >
+  //                 -
+  //               </button>
+  //             </div>
+  //             <input
+  //               type="text"
+  //               class="form-control no-border text-center bg-white"
+  //               value="${lineItem?.quantity}"
+  //               aria-label="Quantite"
+  //               readonly
+  //             />
+  //             <div class="input-group-append">
+  //               <button
+  //                 class="input-group-text bg-transparent no-border js-crtl__qty"
+  //                 data-operation="+"
+  //                 data-item="${index}"
+  //                 data-itemid="${product.id}"
+  //               >
+  //                 +
+  //               </button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </td>
+  //       <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
+  //         <span class="js-item-total">${
+  //           lineItem?.quantity * product?.regular_price
+  //         }</span>
+  //         <sup>DZD</sup>
+  //       </td>
+  //       <td class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3">
+  //         <button 
+  //           class="bg-transparent no-border js-cart__remove-item"
+  //           data-item="${index}"
+  //         >
+  //           &times;
+  //         </button>
+  //       </td>
+  //     </tr>
+  //   `;
+  //     renderUI += tr;
+  //   });
 
-    // @ts-ignore
-    if (lineItems?.length <= 0) {
-      renderUI = `<tr class="border-bottom-black">
-      <td
-        class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
-        scope="row"
-        rowspan="5"
-      >
-          <span class="panier__product-item">Votre panier est vide.</span>
-        </td>
-    </tr>`;
-    }
+  //   // @ts-ignore
+  //   if (lineItems?.length <= 0) {
+  //     renderUI = `<tr class="border-bottom-black">
+  //     <td
+  //       class="align-middle pt-lg-5 pt-sm-3 pb-lg-5 pb-sm-3"
+  //       scope="row"
+  //       rowspan="5"
+  //     >
+  //         <span class="panier__product-item">Votre panier est vide.</span>
+  //       </td>
+  //   </tr>`;
+  //   }
 
-    const $lineItemsTotal = document.querySelector(".js-line-items-total");
-    const $cartBody = document.querySelector(".js-cart-details");
-    $lineItemsTotal.textContent = `${lineItemsTotal}`;
-    $cartBody.innerHTML = renderUI;
-    // remove items
-    const $removeBtns = document.querySelectorAll(".js-cart__remove-item");
-    $removeBtns.forEach(($btn) => {
-      $btn.addEventListener("click", async () => {
-        // @ts-ignore
-        const itemIndex = $btn.dataset?.["item"];
-        const cart = new CartStorage();
-        await cart.removeItemByIndex(Number(itemIndex));
-        await renderItems();
-        const [shippingLine] = await cart.getShippingLines();
-        const $subtotal = document.querySelector(".js-line-items-subtotal");
-        const total = await computeOrderTotal();
-        $subtotal.textContent = `${
-          total - parseInt(shippingLine?.total || "0", 10)
-        }`;
-      });
-    });
-    // set item quantity
-    const $btnsQtyCtrl = document.querySelectorAll(".js-crtl__qty");
-    $btnsQtyCtrl.forEach(($btn) => {
-      $btn.addEventListener("click", async function (e) {
-        e.preventDefault();
-        const _operation = this.dataset.operation;
-        const _index = this.dataset.item;
-        const _itemId = this.dataset.itemid;
-        const $parent = this.parentNode;
-        const $qtyInput =
-          _operation === "-"
-            ? $parent.nextElementSibling
-            : $parent.previousElementSibling;
+  //   const $lineItemsTotal = document.querySelector(".js-line-items-total");
+  //   const $cartBody = document.querySelector(".js-cart-details");
+  //   $lineItemsTotal.textContent = `${lineItemsTotal}`;
+  //   $cartBody.innerHTML = renderUI;
+  //   // remove items
+  //   const $removeBtns = document.querySelectorAll(".js-cart__remove-item");
+  //   $removeBtns.forEach(($btn) => {
+  //     $btn.addEventListener("click", async () => {
+  //       // @ts-ignore
+  //       const itemIndex = $btn.dataset?.["item"];
+  //       const cart = new CartStorage();
+  //       await cart.removeItemByIndex(Number(itemIndex));
+  //       await renderItems();
+  //       const [shippingLine] = await cart.getShippingLines();
+  //       const $subtotal = document.querySelector(".js-line-items-subtotal");
+  //       const total = await computeOrderTotal();
+  //       $subtotal.textContent = `${
+  //         total - parseInt(shippingLine?.total || "0", 10)
+  //       }`;
+  //     });
+  //   });
+  //   // set item quantity
+  //   const $btnsQtyCtrl = document.querySelectorAll(".js-crtl__qty");
+  //   $btnsQtyCtrl.forEach(($btn) => {
+  //     $btn.addEventListener("click", async function (e) {
+  //       e.preventDefault();
+  //       const _operation = this.dataset.operation;
+  //       const _index = this.dataset.item;
+  //       const _itemId = this.dataset.itemid;
+  //       const $parent = this.parentNode;
+  //       const $qtyInput =
+  //         _operation === "-"
+  //           ? $parent.nextElementSibling
+  //           : $parent.previousElementSibling;
 
-        let _sum = parseInt($qtyInput.value, 10);
-        _sum = _operation === "-" ? _sum - 1 : _sum + 1;
-        _sum = _sum < 1 ? 1 : _sum;
-        $qtyInput.value = _sum;
-        const cart = new CartStorage();
-        await cart.updateItemQuantityByIndex(_index, _sum);
-        const [shippingLine] = await cart.getShippingLines();
-        const productsDetails = await cart.getItemsDetails();
-        const itemPrice = productsDetails?.[_itemId]?.regular_price;
-        const itemTotal = _sum * itemPrice;
-        const total = await computeOrderTotal();
-        const $total = document.querySelector(".js-line-items-total");
-        $total.textContent = `${total}`;
-        const $subtotal = document.querySelector(".js-line-items-subtotal");
-        $subtotal.textContent = `${
-          total - parseInt(shippingLine?.total || "0", 10)
-        }`;
-        const $itemTotal: HTMLElement =
-          document.querySelector(".js-item-total");
-        $itemTotal.textContent = `${itemTotal}`;
-      });
-    });
-  };
-  await renderItems();
-  // get shipping locations
-  const $shippingLocation = document.querySelector(".js-shipping__location");
-  await fetchAndRenderShippingLocation($shippingLocation);
-  const $subtotal = document.querySelector(".js-line-items-subtotal");
-  const total = await computeOrderTotal();
-  const cart = new CartStorage();
-  const [shippingLine] = await cart.getShippingLines();
-  $subtotal.textContent = `${total - parseInt(shippingLine?.total || "0")}`;
+  //       let _sum = parseInt($qtyInput.value, 10);
+  //       _sum = _operation === "-" ? _sum - 1 : _sum + 1;
+  //       _sum = _sum < 1 ? 1 : _sum;
+  //       $qtyInput.value = _sum;
+  //       const cart = new CartStorage();
+  //       await cart.updateItemQuantityByIndex(_index, _sum);
+  //       const [shippingLine] = await cart.getShippingLines();
+  //       const productsDetails = await cart.getItemsDetails();
+  //       const itemPrice = productsDetails?.[_itemId]?.regular_price;
+  //       const itemTotal = _sum * itemPrice;
+  //       const total = await computeOrderTotal();
+  //       const $total = document.querySelector(".js-line-items-total");
+  //       $total.textContent = `${total}`;
+  //       const $subtotal = document.querySelector(".js-line-items-subtotal");
+  //       $subtotal.textContent = `${
+  //         total - parseInt(shippingLine?.total || "0", 10)
+  //       }`;
+  //       const $itemTotal: HTMLElement =
+  //         document.querySelector(".js-item-total");
+  //       $itemTotal.textContent = `${itemTotal}`;
+  //     });
+  //   });
+  // };
+  // await renderItems();
+  // // get shipping locations
+  // const $shippingLocation = document.querySelector(".js-shipping__location");
+  // await fetchAndRenderShippingLocation($shippingLocation);
+  // const $subtotal = document.querySelector(".js-line-items-subtotal");
+  // const total = await computeOrderTotal();
+  // const cart = new CartStorage();
+  // const [shippingLine] = await cart.getShippingLines();
+  // $subtotal.textContent = `${total - parseInt(shippingLine?.total || "0")}`;
 </script>

@@ -29,6 +29,7 @@ export default async function getAllProducts() {
     if (productsPerPage?.length === 0 || productsPerPage?.length < per_page) {
       isNotDone = false;
     }
+    isNotDone = false;
   }
 
   return products;
@@ -36,7 +37,7 @@ export default async function getAllProducts() {
 
 export async function getProductsOfCategory(categoryId: number | string) {
   const products = [];
-  const per_page = 24;
+  const per_page = 100;
   let isNotDone = true;
 
   for (let page = 1; isNotDone; page++) {
@@ -54,6 +55,8 @@ export async function getProductsOfCategory(categoryId: number | string) {
     if (productsPerPage?.length === 0 || productsPerPage?.length < per_page) {
       isNotDone = false;
     }
+    // TODO: remove this
+    isNotDone = false;
   }
 
   return products;
